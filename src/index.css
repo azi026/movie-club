@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@import "@fontsource/estedad/index.css";
+@import "@fontsource/estedad/400.css";
+@import "@fontsource/estedad/500.css";
+@import "@fontsource/estedad/600.css";
+@import "@fontsource/estedad/700.css";
+@import "@fontsource/estedad/800.css";
+
+@layer base {
+  :root {
+    --font-persian: 'Estedad', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-cinzel: 'Cinzel', serif;
+    --font-playfair: 'Playfair Display', serif;
+    --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-persian);
+  }
+
+  [dir="ltr"] {
+    font-family: var(--font-jakarta), sans-serif;
+  }
+
+  [dir="rtl"] {
+    font-family: var(--font-persian), sans-serif;
+  }
+}
+
+.font-cinzel {
+  font-family: var(--font-cinzel), serif !important;
+}
+
+.font-serif-display {
+  font-family: var(--font-playfair), Georgia, serif !important;
+}
+
+.font-persian {
+  font-family: var(--font-persian), sans-serif !important;
+}
+
+.font-english-body {
+  font-family: var(--font-jakarta), sans-serif !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #141312;
+}
+::-webkit-scrollbar-thumb {
+  background: #38332f;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #544c46;
+}
+
+/* Soft glow and cinematic accents */
+.amber-glow {
+  box-shadow: 0 0 40px -10px rgba(194, 120, 71, 0.25);
+}
+
+.card-border-subtle {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
