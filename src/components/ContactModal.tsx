@@ -1,29 +1,97 @@
 import React, { useState } from 'react';
-import { Check, Mail, MapPin, MessageSquare, Phone, Send, X } from 'lucide-react';
+import { MessageSquare, Send, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { CURRENT_GATHERING } from '../data/movieClubData';
+import elahePhoto from '../assets/images/support/elahe.jpg';
+import haniehPhoto from '../assets/images/support/hanieh.jpg';
 
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface SupportMemberCardProps {
+  photoSrc: string;
+  nameFa: string;
+  nameEn: string;
+  telegramUrl: string;
+  initial: string;
+  lang: 'fa' | 'en';
+}
+
+const SupportMemberCard: React.FC<SupportMemberCardProps> = ({
+  photoSrc,
+  nameFa,
+  nameEn,
+  telegramUrl,
+  initial,
+  lang,
+}) => {
+  const [imgError, setImgError] = useState(false);
+  const [isRealPhotoLoaded, setIsRealPhotoLoaded] = useState(false);
+
+  const displayName = lang === 'fa' ? nameFa : nameEn;
+  const roleText = lang === 'fa' ? 'پشتیبانی' : 'Support';
+  const ctaText = lang === 'fa' ? `پیام به ${nameFa}` : `Message ${nameEn}`;
+
+  return (
+    <div className="p-4 sm:p-5 rounded-2xl bg-[#231f1c] border border-white/10 flex flex-col items-center text-center justify-between space-y-3.5 shadow-lg">
+      {/* Profile info section */}
+      <div className="flex flex-col items-center w-full">
+        {/* Circular Profile Photo / Safe Visual Fallback */}
+        <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-[#c27847]/50 bg-[#29221e] shadow-md flex items-center justify-center mx-auto mb-2.5">
+          {!imgError && (
+            <img
+              src={photoSrc}
+              alt={displayName}
+              onError={() => setImgError(true)}
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                if (img.naturalWidth > 10 && img.naturalHeight > 10) {
+                  setIsRealPhotoLoaded(true);
+                }
+              }}
+              className={`w-full h-full object-cover object-center transition-all duration-300 ${
+                isRealPhotoLoaded ? 'opacity-100' : 'opacity-0 absolute'
+              }`}
+            />
+          )}
+
+          {(!isRealPhotoLoaded || imgError) && (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#382c24] to-[#211a16] text-[#e59b67] select-none">
+              <span className="text-xl sm:text-2xl font-bold font-serif">{initial}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Member Name */}
+        <h4 className="text-sm sm:text-base font-bold text-[#fdfbf7] leading-snug">{displayName}</h4>
+
+        {/* Support Label */}
+        <p className="text-xs text-[#c27847] font-medium mt-0.5">{roleText}</p>
+      </div>
+
+      {/* Direct Telegram CTA Button for this member */}
+      <a
+        href={telegramUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full min-h-[40px] flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#c27847]/20 hover:shadow-[#c27847]/35 transition-all duration-200 active:scale-95 cursor-pointer"
+      >
+        <Send className="w-3.5 h-3.5" />
+        <span className="truncate">{ctaText}</span>
+      </a>
+    </div>
+  );
+};
+
 export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
-  const { lang, t } = useLanguage();
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState({ name: '', contact: '', message: '' });
+  const { lang } = useLanguage();
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: '', contact: '', message: '' });
-      onClose();
-    }, 2500);
-  };
+  // Support Telegram handles
+  const elaheTelegramUrl = 'https://t.me/Ellizrr';
+  const haniehTelegramUrl = 'https://t.me/Haniemir';
 
   return (
     <div
@@ -40,120 +108,55 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-[#221e1b]">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-[#c27847]/20 text-[#e59b67] border border-[#c27847]/30">
-              <Mail className="w-5 h-5" />
+              <MessageSquare className="w-5 h-5" />
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-[#fdfbf7]">
                 {lang === 'fa' ? 'تماس با ما' : 'Contact Us'}
               </h3>
               <p className="text-xs text-[#a39487]">
-                {lang === 'fa' ? 'هر سوال یا پیشنهادی دارید در کنارتان هستیم' : "We'd love to hear from you"}
+                {lang === 'fa'
+                  ? 'سوالی درباره دورهمیها داری؟ با ما در ارتباط باش.'
+                  : 'Have a question about the gatherings? Get in touch with us.'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-white/10 text-[#a39487] hover:text-white transition-colors"
+            className="p-2 rounded-xl hover:bg-white/10 text-[#a39487] hover:text-white transition-colors cursor-pointer"
+            aria-label={lang === 'fa' ? 'بستن' : 'Close'}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-6 overflow-y-auto space-y-5 text-right">
-          {/* Quick info cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3.5 rounded-xl bg-[#231f1c] border border-white/5 space-y-1">
-              <div className="flex items-center gap-1.5 text-[#e59b67] font-semibold">
-                <MapPin className="w-4 h-4" />
-                <span>{lang === 'fa' ? 'محل برگزاری' : 'Venue'}</span>
-              </div>
-              <p className="text-[#d9cebf]">
-                {lang === 'fa' ? CURRENT_GATHERING.cafeNameFa : CURRENT_GATHERING.cafeNameEn}
-              </p>
-              <p className="text-[11px] text-[#8e7f72]">
-                {lang === 'fa' ? CURRENT_GATHERING.locationFa : CURRENT_GATHERING.locationEn}
-              </p>
-            </div>
+        <div className="p-6">
+          {/* Two separate support cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            {/* Card 1: Elahe */}
+            <SupportMemberCard
+              photoSrc={elahePhoto}
+              nameFa="الهه"
+              nameEn="Elahe"
+              telegramUrl={elaheTelegramUrl}
+              initial={lang === 'fa' ? 'ا' : 'E'}
+              lang={lang}
+            />
 
-            <div className="p-3.5 rounded-xl bg-[#231f1c] border border-white/5 space-y-1">
-              <div className="flex items-center gap-1.5 text-[#e59b67] font-semibold">
-                <Send className="w-4 h-4" />
-                <span>{lang === 'fa' ? 'پشتیبانی تلگرام' : 'Telegram Support'}</span>
-              </div>
-              <p className="text-[#d9cebf] font-mono" dir="ltr">
-                @movieclub_admin
-              </p>
-              <p className="text-[11px] text-[#8e7f72]">
-                {lang === 'fa' ? 'پاسخگویی روزانه' : 'Fast response'}
-              </p>
-            </div>
+            {/* Card 2: Hanieh */}
+            <SupportMemberCard
+              photoSrc={haniehPhoto}
+              nameFa="هانیه"
+              nameEn="Hanieh"
+              telegramUrl={haniehTelegramUrl}
+              initial={lang === 'fa' ? 'ه' : 'H'}
+              lang={lang}
+            />
           </div>
-
-          {submitted ? (
-            <div className="p-6 rounded-2xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-400 text-center space-y-2 animate-fade-in">
-              <Check className="w-8 h-8 mx-auto" />
-              <h4 className="font-bold text-sm">
-                {lang === 'fa' ? 'پیام شما دریافت شد!' : 'Message Sent Successfully!'}
-              </h4>
-              <p className="text-xs text-emerald-300/80">
-                {lang === 'fa' ? 'به زودی با شما تماس می‌گیریم.' : 'We will get back to you shortly.'}
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-3.5">
-              <div>
-                <label className="block text-xs font-semibold text-[#d4c7ba] mb-1">
-                  {lang === 'fa' ? 'نام' : 'Name'}
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder={lang === 'fa' ? 'نام شما' : 'Your name'}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#241f1c] border border-white/10 text-xs text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#d4c7ba] mb-1">
-                  {lang === 'fa' ? 'شماره تماس یا ایمیل' : 'Phone or Email'}
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.contact}
-                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                  placeholder={lang === 'fa' ? 'ایمیل یا شماره شما' : 'Your contact'}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#241f1c] border border-white/10 text-xs text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#d4c7ba] mb-1">
-                  {lang === 'fa' ? 'پیام یا سوال شما' : 'Message'}
-                </label>
-                <textarea
-                  rows={3}
-                  required
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder={lang === 'fa' ? 'پیام خود را بنویسید...' : 'Your message...'}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#241f1c] border border-white/10 text-xs text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847] resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs font-bold shadow-md transition-colors cursor-pointer"
-              >
-                {lang === 'fa' ? 'ارسال پیام' : 'Send Message'}
-              </button>
-            </form>
-          )}
         </div>
       </div>
     </div>
   );
 };
+

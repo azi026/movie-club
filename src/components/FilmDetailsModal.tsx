@@ -11,7 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { CURRENT_GATHERING, CURRENT_MOVIE } from '../data/movieClubData';
+import { useSession } from '../context/SessionContext';
 
 interface FilmDetailsModalProps {
   isOpen: boolean;
@@ -25,9 +25,39 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
   onOpenReservation,
 }) => {
   const { lang, t } = useLanguage();
+  const { hasActiveSession, session, movie, isFull, getDateDisplay, getTimeDisplay } = useSession();
   const [activeTab, setActiveTab] = useState<'overview' | 'questions' | 'vocab'>('overview');
 
   if (!isOpen) return null;
+
+  if (!hasActiveSession || !movie || !session) {
+    return (
+      <div
+        id="film-details-modal-overlay"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in"
+        onClick={onClose}
+      >
+        <div
+          id="film-details-modal-container"
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-md bg-[#181614] text-[#fdfbf7] rounded-3xl border border-white/15 shadow-2xl p-8 text-center flex flex-col items-center justify-center space-y-4"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#27221e] border border-[#e59b67]/20 flex items-center justify-center text-[#e59b67] shadow-inner">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-bold text-[#f5f1eb]">
+            {lang === 'fa' ? 'جلسه بعدی به‌زودی اعلام می‌شود' : 'Next gathering will be announced soon'}
+          </h3>
+          <button
+            onClick={onClose}
+            className="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors cursor-pointer"
+          >
+            {lang === 'fa' ? 'بستن' : 'Close'}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -43,8 +73,8 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
         {/* Banner with Film Still */}
         <div className="relative h-48 sm:h-56 w-full shrink-0 overflow-hidden">
           <img
-            src={CURRENT_MOVIE.image}
-            alt={CURRENT_MOVIE.title}
+            src={movie.image}
+            alt={movie.title}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#181614] via-[#181614]/50 to-transparent" />
@@ -64,16 +94,16 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
                 {t('film.badge')}
               </span>
               <h2 className="text-2xl sm:text-3xl font-cinzel font-bold text-white tracking-widest mt-1">
-                {CURRENT_MOVIE.title}
+                {movie.title}
               </h2>
               <p className="text-sm font-medium text-[#e59b67]">
-                {lang === 'fa' ? CURRENT_MOVIE.titleFa : CURRENT_MOVIE.title} ({CURRENT_MOVIE.year})
+                {lang === 'fa' ? movie.titleFa : movie.title} ({movie.year})
               </p>
             </div>
 
             <div className="hidden sm:flex items-center gap-2 text-xs text-[#d1c8be] bg-black/40 px-3 py-1.5 rounded-lg backdrop-blur-sm">
               <Clock className="w-3.5 h-3.5 text-[#e59b67]" />
-              <span>{lang === 'fa' ? CURRENT_MOVIE.durationFa : CURRENT_MOVIE.duration}</span>
+              <span>{lang === 'fa' ? movie.durationFa : movie.duration}</span>
             </div>
           </div>
         </div>
@@ -127,7 +157,7 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
                   {lang === 'fa' ? 'خلاصه داستان' : 'Synopsis'}
                 </h4>
                 <p className="text-sm sm:text-base text-[#d9cebf] leading-relaxed">
-                  {lang === 'fa' ? CURRENT_MOVIE.synopsisFa : CURRENT_MOVIE.synopsis}
+                  {lang === 'fa' ? movie.synopsisFa : movie.synopsis}
                 </p>
               </div>
 
@@ -136,25 +166,25 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
                 <div>
                   <span className="text-[#8e7f72] block">{t('film.director')}</span>
                   <span className="font-semibold text-white mt-1 block">
-                    {lang === 'fa' ? CURRENT_MOVIE.directorFa : CURRENT_MOVIE.director}
+                    {lang === 'fa' ? movie.directorFa : movie.director}
                   </span>
                 </div>
                 <div>
                   <span className="text-[#8e7f72] block">{t('film.genre')}</span>
                   <span className="font-semibold text-white mt-1 block">
-                    {lang === 'fa' ? CURRENT_MOVIE.genreFa : CURRENT_MOVIE.genre}
+                    {lang === 'fa' ? movie.genreFa : movie.genre}
                   </span>
                 </div>
                 <div>
                   <span className="text-[#8e7f72] block">{t('film.duration')}</span>
                   <span className="font-semibold text-white mt-1 block">
-                    {lang === 'fa' ? CURRENT_MOVIE.durationFa : CURRENT_MOVIE.duration}
+                    {lang === 'fa' ? movie.durationFa : movie.duration}
                   </span>
                 </div>
                 <div>
                   <span className="text-[#8e7f72] block">{t('film.year')}</span>
                   <span className="font-semibold text-white mt-1 block">
-                    {CURRENT_MOVIE.year}
+                    {movie.year}
                   </span>
                 </div>
               </div>
@@ -179,7 +209,7 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
                   : 'Here are sample prompts we will explore together at the café:'}
               </p>
 
-              {CURRENT_MOVIE.discussionQuestions.map((q, idx) => (
+              {movie.discussionQuestions.map((q, idx) => (
                 <div
                   key={idx}
                   className="p-4 rounded-2xl bg-[#221e1a] border border-white/5 space-y-2 hover:border-[#c27847]/40 transition-colors"
@@ -209,7 +239,7 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
                   : 'Key terms and idioms to enrich your speaking:'}
               </p>
 
-              {CURRENT_MOVIE.vocabulary.map((v, idx) => (
+              {movie.vocabulary.map((v, idx) => (
                 <div
                   key={idx}
                   className="p-4 rounded-2xl bg-[#221e1a] border border-white/5 space-y-1.5"
@@ -241,19 +271,25 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
           <div className="flex items-center gap-2 text-xs text-[#a39487]">
             <Calendar className="w-4 h-4 text-[#e59b67]" />
             <span>
-              {lang === 'fa' ? CURRENT_GATHERING.dateFa : CURRENT_GATHERING.dateEn} • {CURRENT_GATHERING.time}
+              {getDateDisplay(lang)} • {getTimeDisplay(lang)}
             </span>
           </div>
 
           <button
             onClick={() => {
+              if (isFull) return;
               onClose();
               onOpenReservation();
             }}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
+            disabled={isFull}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+              isFull
+                ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
+                : 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-md cursor-pointer'
+            }`}
           >
             <Ticket className="w-4 h-4" />
-            <span>{t('hero.cta_primary')}</span>
+            <span>{isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('hero.cta_primary')}</span>
           </button>
         </div>
       </div>

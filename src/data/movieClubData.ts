@@ -75,7 +75,7 @@ export const PAYMENT_CONFIG = {
   priceFormattedEn: '280,000 Toman',
   cardNumber: '6037998123456789',
   cardNumberFormatted: '۶۰۳۷ - ۹۹۸۱ - ۲۳۴۵ - ۶۷۸۹',
-  cardHolderNameFa: 'هانیه میرابوالقاسمی',
+  cardHolderNameFa: 'هانیه میرابوالقاس',
   cardHolderNameEn: 'Hanieh Mirabolghasemi',
   supportLink: 'https://t.me/movieclub_support',
 };
@@ -92,7 +92,7 @@ export const CURRENT_GATHERING: GatheringData = {
   locationEn: 'Al-Ghadir Street, Ghadir 10',
   addressFa: 'خیابان الغدیر، غدیر 10',
   addressEn: 'Al-Ghadir Street, Ghadir 10',
-  hostFa: 'الهه و هانیه (برگزارکننده)',
+  hostFa: 'آرش و نیلوفر (تسهیل‌گر گفتگو)',
   hostEn: 'Arash & Niloofar (Friendly Facilitators)',
   priceNoteFa: 'هزینه نوشیدنی/سفارش شخصی در کافه به عهده هر شرکت‌کننده است',
   priceNoteEn: 'Each attendee covers their own beverage/order at the café',

@@ -82,7 +82,7 @@ export const Footer: React.FC<FooterProps> = ({
               <Instagram className="w-4 h-4" />
             </a>
             <a
-              href="https://t.me"
+              href="https://t.me/Ellizrr"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center min-w-[40px] min-h-[40px] p-2 rounded-lg bg-white/5 hover:bg-[#c27847] hover:text-white border border-white/10 transition-all active:scale-95"

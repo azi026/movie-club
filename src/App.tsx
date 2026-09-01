@@ -11,6 +11,7 @@ import { MidRowCards } from './components/MidRowCards';
 import { Navbar } from './components/Navbar';
 import { ReservationModal } from './components/ReservationModal';
 import { LanguageProvider } from './context/LanguageContext';
+import { SessionProvider } from './context/SessionContext';
 
 export function MovieClubApp() {
   const [isReservationOpen, setIsReservationOpen] = useState(false);
@@ -105,7 +106,9 @@ export function MovieClubApp() {
 export default function App() {
   return (
     <LanguageProvider>
-      <MovieClubApp />
+      <SessionProvider>
+        <MovieClubApp />
+      </SessionProvider>
     </LanguageProvider>
   );
 }

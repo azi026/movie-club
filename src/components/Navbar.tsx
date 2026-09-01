@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Globe, Menu, Moon, Sun, Ticket, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSession } from '../context/SessionContext';
 
 interface NavbarProps {
   onOpenReservation: () => void;
@@ -17,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onScrollTo,
 }) => {
   const { lang, toggleLang, isRtl, t } = useLanguage();
+  const { isFull } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAtmosphericMode, setIsAtmosphericMode] = useState(true);
 
@@ -120,11 +122,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Primary CTA Button (Desktop) */}
             <button
               id="navbar-reserve-primary-btn"
-              onClick={onOpenReservation}
-              className="hidden sm:inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-sm font-semibold shadow-lg shadow-[#c27847]/20 hover:shadow-[#c27847]/40 transition-all duration-200 active:scale-95 cursor-pointer"
+              onClick={isFull ? undefined : onOpenReservation}
+              disabled={isFull}
+              className={`hidden sm:inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                isFull
+                  ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
+                  : 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-lg shadow-[#c27847]/20 hover:shadow-[#c27847]/40 active:scale-95 cursor-pointer'
+              }`}
             >
               <Ticket className="w-4 h-4" />
-              <span>{t('nav.reserve')}</span>
+              <span>{isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('nav.reserve')}</span>
             </button>
 
             {/* Mobile Menu Button (min 44px tap target) */}
@@ -188,13 +195,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="pt-1">
             <button
               onClick={() => {
+                if (isFull) return;
                 setMobileMenuOpen(false);
                 onOpenReservation();
               }}
-              className="w-full min-h-[42px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white font-bold text-sm shadow-md cursor-pointer active:scale-98 transition-all"
+              disabled={isFull}
+              className={`w-full min-h-[42px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm shadow-md transition-all ${
+                isFull
+                  ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
+                  : 'bg-[#c27847] hover:bg-[#a86134] text-white cursor-pointer active:scale-98'
+              }`}
             >
               <Ticket className="w-4 h-4" />
-              <span>{t('nav.reserve')}</span>
+              <span>{isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('nav.reserve')}</span>
             </button>
           </div>
         </div>

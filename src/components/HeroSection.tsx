@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clapperboard, Coffee, MessageSquare, Play, Sparkles, Ticket } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSession } from '../context/SessionContext';
 import { HERO_ASSET } from '../data/movieClubData';
 
 interface HeroSectionProps {
@@ -12,7 +13,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenReservation,
   onOpenFilmDetails,
 }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
+  const { isFull } = useSession();
 
   return (
     <section
@@ -92,11 +94,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div id="hero-cta-buttons" className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full max-w-xs sm:max-w-none">
           <button
             id="hero-primary-cta"
-            onClick={onOpenReservation}
-            className="w-full sm:w-auto min-h-[48px] flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-sm sm:text-base font-bold shadow-lg shadow-[#c27847]/30 hover:shadow-[#c27847]/45 transition-all duration-200 active:scale-95 cursor-pointer"
+            onClick={isFull ? undefined : onOpenReservation}
+            disabled={isFull}
+            className={`w-full sm:w-auto min-h-[48px] flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm sm:text-base font-bold transition-all duration-200 ${
+              isFull
+                ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
+                : 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-lg shadow-[#c27847]/30 hover:shadow-[#c27847]/45 active:scale-95 cursor-pointer'
+            }`}
           >
             <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>{t('hero.cta_primary')}</span>
+            <span>{isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('hero.cta_primary')}</span>
           </button>
 
           <button

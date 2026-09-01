@@ -1,6 +1,7 @@
 import React from 'react';
 import { Coffee, Film, Heart, Sparkles, Users, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSession } from '../context/SessionContext';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({
   onOpenReservation,
 }) => {
   const { lang, t } = useLanguage();
+  const { isFull } = useSession();
 
   if (!isOpen) return null;
 
@@ -122,12 +124,18 @@ export const AboutModal: React.FC<AboutModalProps> = ({
           </button>
           <button
             onClick={() => {
+              if (isFull) return;
               onClose();
               onOpenReservation();
             }}
-            className="px-6 py-2.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
+            disabled={isFull}
+            className={`px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold shadow-md transition-all ${
+              isFull
+                ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
+                : 'bg-[#c27847] hover:bg-[#a86134] text-white cursor-pointer'
+            }`}
           >
-            {t('nav.reserve')}
+            {isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('nav.reserve')}
           </button>
         </div>
       </div>

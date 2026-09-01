@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  AlertCircle,
   Calendar,
   Check,
   Clock,
@@ -9,6 +10,7 @@ import {
   ExternalLink,
   Heart,
   Hourglass,
+  Loader2,
   MapPin,
   Send,
   Sparkles,
@@ -17,7 +19,9 @@ import {
   X,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { CURRENT_GATHERING, CURRENT_MOVIE, PAYMENT_CONFIG } from '../data/movieClubData';
+import { useSession } from '../context/SessionContext';
+import { PAYMENT_CONFIG } from '../data/movieClubData';
+import { supabase } from '../lib/supabase';
 import { ReservationPayload } from '../types';
 
 interface ReservationModalProps {
@@ -27,6 +31,7 @@ interface ReservationModalProps {
 
 export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onClose }) => {
   const { lang, isRtl, t } = useLanguage();
+  const { hasActiveSession, session, movie, isFull, refreshCapacity, getDateDisplay, getTimeDisplay } = useSession();
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [formData, setFormData] = useState<ReservationPayload>({
@@ -40,8 +45,39 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
   const [reservationCode, setReservationCode] = useState<string>('');
   const [hasTransferred, setHasTransferred] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   if (!isOpen) return null;
+
+  if (!hasActiveSession || !session || !movie) {
+    return (
+      <div
+        id="reservation-modal-overlay"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in"
+        onClick={onClose}
+      >
+        <div
+          id="reservation-modal-container"
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-md bg-[#181614] text-[#fdfbf7] rounded-3xl border border-white/15 shadow-2xl p-8 text-center flex flex-col items-center justify-center space-y-4"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-[#27221e] border border-[#e59b67]/20 flex items-center justify-center text-[#e59b67] shadow-inner">
+            <Calendar className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-bold text-[#f5f1eb]">
+            {lang === 'fa' ? 'جلسه بعدی به‌زودی اعلام می‌شود' : 'Next gathering will be announced soon'}
+          </h3>
+          <button
+            onClick={onClose}
+            className="px-6 py-2.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs font-bold transition-colors cursor-pointer"
+          >
+            {lang === 'fa' ? 'متوجه شدم' : 'Got it'}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleCopyCardNumber = () => {
     if (navigator?.clipboard?.writeText) {
@@ -51,23 +87,106 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleNextStep = (e: React.FormEvent) => {
+  const handleNextStep = async (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) {
       setStep(2);
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
-      const code = `MC-${Math.floor(100000 + Math.random() * 900000)}`;
-      setReservationCode(code);
-      setStep(4);
+      if (isSubmitting) return;
+
+      if (isFull) {
+        setSubmitError(
+          lang === 'fa'
+            ? 'متأسفانه ظرفیت این جلسه تکمیل شده است.'
+            : 'Sorry, this session is now fully booked.'
+        );
+        return;
+      }
+
+      if (!session?.id) {
+        setSubmitError(
+          lang === 'fa'
+            ? 'جلسه فعالی برای ثبت رزرو یافت نشد.'
+            : 'No active session found for reservation.'
+        );
+        return;
+      }
+
+      setIsSubmitting(true);
+      setSubmitError(null);
+
+      try {
+        const { data, error } = await supabase.rpc('create_session_reservation', {
+          p_session_id: Number(session.id),
+          p_full_name: formData.fullName.trim(),
+          p_phone: formData.contact.trim(),
+          p_email: formData.email.trim() || null,
+          p_english_level: formData.englishLevel,
+          p_drink: formData.drinkPreference?.trim() || null,
+        });
+
+        if (error) {
+          console.error('Supabase error calling create_session_reservation RPC:', error);
+          setSubmitError(
+            lang === 'fa'
+              ? 'خطا در ثبت اطلاعات در پایگاه داده. لطفاً دوباره تلاش کنید.'
+              : 'Error saving reservation to the database. Please try again.'
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (data && typeof data === 'object') {
+          if (data.success === false) {
+            if (data.error === 'SESSION_FULL') {
+              setSubmitError(
+                lang === 'fa'
+                  ? 'متأسفانه ظرفیت این جلسه تکمیل شده است.'
+                  : 'Sorry, this session is now fully booked.'
+              );
+            } else if (data.error === 'SESSION_NOT_FOUND') {
+              setSubmitError(
+                lang === 'fa'
+                  ? 'این جلسه دیگر برای رزرو فعال نیست.'
+                  : 'This session is no longer available for reservation.'
+              );
+            } else {
+              setSubmitError(
+                lang === 'fa'
+                  ? 'خطا در ثبت رزرو. لطفاً دوباره تلاش کنید.'
+                  : 'Error saving reservation. Please try again.'
+              );
+            }
+            setIsSubmitting(false);
+            return;
+          }
+        }
+
+        const code = `MC-${Math.floor(100000 + Math.random() * 900000)}`;
+        setReservationCode(code);
+        setStep(4);
+        refreshCapacity();
+      } catch (err: any) {
+        console.error('Unexpected reservation error:', err);
+        setSubmitError(
+          lang === 'fa'
+            ? 'خطای غیرمنتظره در ارتباط با سرور. لطفاً دوباره تلاش کنید.'
+            : 'An unexpected connection error occurred. Please try again.'
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
   const handleResetAndClose = () => {
+    if (isSubmitting) return;
     setStep(1);
     setHasTransferred(false);
     setCopied(false);
+    setSubmitError(null);
     setFormData({
       fullName: '',
       contact: '',
@@ -101,7 +220,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 {t('modal.reserve_title')}
               </h3>
               <p className="text-[10px] sm:text-xs text-[#a39487]">
-                {lang === 'fa' ? CURRENT_MOVIE.titleFa : CURRENT_MOVIE.title} • {lang === 'fa' ? CURRENT_GATHERING.dateFa : CURRENT_GATHERING.dateEn}
+                {lang === 'fa' ? movie.titleFa : movie.title} • {getDateDisplay(lang)}
               </p>
             </div>
           </div>
@@ -356,7 +475,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                     {lang === 'fa' ? 'تکمیل رزرو' : 'Reservation Summary'}
                   </h4>
                   <span className="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-md bg-[#c27847]/20 text-[#e59b67] font-medium">
-                    {lang === 'fa' ? CURRENT_GATHERING.dayOfWeekFa : CURRENT_GATHERING.dayOfWeekEn}
+                    {lang === 'fa' ? session.dayOfWeekFa : session.dayOfWeekEn}
                   </span>
                 </div>
 
@@ -366,7 +485,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? 'نام فیلم:' : 'Movie:'}
                     </span>
                     <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
-                      {lang === 'fa' ? CURRENT_MOVIE.titleFa : CURRENT_MOVIE.title}
+                      {lang === 'fa' ? movie.titleFa : movie.title}
                     </span>
                   </div>
                   <div>
@@ -374,7 +493,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? 'تاریخ و ساعت:' : 'Date & Time:'}
                     </span>
                     <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
-                      {lang === 'fa' ? CURRENT_GATHERING.dateFa : CURRENT_GATHERING.dateEn} • {CURRENT_GATHERING.time}
+                      {getDateDisplay(lang)} • {getTimeDisplay(lang)}
                     </span>
                   </div>
                   <div>
@@ -382,7 +501,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? 'محل برگزاری:' : 'Location:'}
                     </span>
                     <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
-                      {lang === 'fa' ? CURRENT_GATHERING.cafeNameFa : CURRENT_GATHERING.cafeNameEn}
+                      {lang === 'fa' ? session.locationNameFa : session.locationNameEn}
                     </span>
                   </div>
                   <div>
@@ -476,12 +595,25 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   </a>
                 </div>
 
+                {/* Submission Error Banner */}
+                {submitError && (
+                  <div
+                    className={`p-2.5 sm:p-3 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs flex items-center gap-2 ${
+                      isRtl ? 'text-right' : 'text-left'
+                    }`}
+                  >
+                    <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                    <span className="leading-snug">{submitError}</span>
+                  </div>
+                )}
+
                 {/* Verification Checkbox */}
                 <label className="flex items-start gap-2 pt-1.5 border-t border-white/10 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={hasTransferred}
                     onChange={(e) => setHasTransferred(e.target.checked)}
+                    disabled={isSubmitting}
                     className="mt-0.5 accent-[#c27847] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded cursor-pointer shrink-0"
                   />
                   <span className="text-[10.5px] sm:text-xs text-[#e8ded3] leading-snug font-medium">
@@ -497,20 +629,30 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="w-1/3 min-h-[38px] sm:min-h-[44px] py-1.5 sm:py-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#d1c8be] transition-colors cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-1/3 min-h-[38px] sm:min-h-[44px] py-1.5 sm:py-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#d1c8be] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {lang === 'fa' ? 'بازگشت' : 'Back'}
                 </button>
                 <button
                   type="submit"
-                  disabled={!hasTransferred}
-                  className={`w-2/3 min-h-[38px] sm:min-h-[44px] py-1.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold shadow-lg transition-all ${
-                    hasTransferred
+                  disabled={!hasTransferred || isSubmitting || isFull}
+                  className={`w-2/3 min-h-[38px] sm:min-h-[44px] py-1.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold shadow-lg transition-all flex items-center justify-center gap-2 ${
+                    hasTransferred && !isSubmitting && !isFull
                       ? 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-[#c27847]/30 cursor-pointer active:scale-98'
                       : 'bg-white/10 text-[#73675c] border border-white/5 cursor-not-allowed opacity-70'
                   }`}
                 >
-                  {lang === 'fa' ? 'ثبت درخواست رزرو' : 'Submit Reservation Request'}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>{lang === 'fa' ? 'در حال ثبت اطلاعات...' : 'Submitting...'}</span>
+                    </>
+                  ) : (
+                    isFull
+                      ? (lang === 'fa' ? 'ظرفیت تکمیل شده است' : 'Fully Booked')
+                      : (lang === 'fa' ? 'ثبت درخواست رزرو' : 'Submit Reservation Request')
+                  )}
                 </button>
               </div>
             </form>
@@ -557,7 +699,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? 'فیلم:' : 'Film:'}
                     </span>
                     <span className="font-semibold text-white">
-                      {lang === 'fa' ? CURRENT_MOVIE.titleFa : CURRENT_MOVIE.title}
+                      {lang === 'fa' ? movie.titleFa : movie.title}
                     </span>
                   </div>
                   <div>
@@ -565,7 +707,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? 'زمان:' : 'Time:'}
                     </span>
                     <span className="font-semibold text-white">
-                      {lang === 'fa' ? CURRENT_GATHERING.dateFa : CURRENT_GATHERING.dateEn} • {CURRENT_GATHERING.time}
+                      {getDateDisplay(lang)} • {getTimeDisplay(lang)}
                     </span>
                   </div>
                   <div className="col-span-2">
@@ -573,7 +715,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? 'محل برگزاری:' : 'Location:'}
                     </span>
                     <span className="font-semibold text-white">
-                      {lang === 'fa' ? CURRENT_GATHERING.cafeNameFa : CURRENT_GATHERING.cafeNameEn} ({lang === 'fa' ? CURRENT_GATHERING.locationFa : CURRENT_GATHERING.locationEn})
+                      {lang === 'fa' ? session.locationNameFa : session.locationNameEn} ({lang === 'fa' ? session.locationAddressFa : session.locationAddressEn})
                     </span>
                   </div>
                 </div>
