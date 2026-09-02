@@ -122,7 +122,7 @@ export const HOW_IT_WORKS_STEPS = [
     stepNumber: 3,
     titleFa: 'به اندازه‌ای که راحتی، صحبت کن',
     titleEn: 'Speak at Your Own Pace',
-    descFa: 'گوش بده، نظر بده، سوال بپرس و از گفتگو لذت ببر. فشار هیچ‌جایی نیست!',
+    descFa: 'گوش بده، نظر بده، سوال بپرس و از گفتگو لذت ببر.'
     descEn: 'Listen, share thoughts, ask questions, or just enjoy the vibe. No pressure at all!',
     icon: 'message-circle',
   },
