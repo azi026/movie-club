@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Menu, Moon, Sun, Ticket, X } from 'lucide-react';
+import { Globe, Menu, Ticket, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSession } from '../context/SessionContext';
 
@@ -20,7 +20,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { lang, toggleLang, isRtl, t } = useLanguage();
   const { isFull } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isAtmosphericMode, setIsAtmosphericMode] = useState(true);
 
   const handleNavClick = (sectionId: string) => {
     setMobileMenuOpen(false);
@@ -103,20 +102,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Globe className="w-3.5 h-3.5 text-[#e59b67]" />
               <span className="font-semibold tracking-wider">{lang === 'fa' ? 'EN' : 'FA'}</span>
-            </button>
-
-            {/* Atmosphere toggle */}
-            <button
-              id="theme-atmosphere-toggle"
-              onClick={() => setIsAtmosphericMode(!isAtmosphericMode)}
-              className="flex items-center justify-center min-w-[40px] min-h-[40px] p-2 rounded-lg bg-white/5 hover:bg-white/10 text-[#d1c8be] border border-white/10 transition-all active:scale-95 cursor-pointer"
-              title="Cinema Mood Mode"
-            >
-              {isAtmosphericMode ? (
-                <Moon className="w-4 h-4 text-[#e59b67]" />
-              ) : (
-                <Sun className="w-4 h-4 text-[#e59b67]" />
-              )}
             </button>
 
             {/* Primary CTA Button (Desktop) */}

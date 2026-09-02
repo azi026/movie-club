@@ -91,7 +91,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
 
   // Support Telegram handles
   const elaheTelegramUrl = 'https://t.me/Ellizrr';
-  const haniehTelegramUrl = 'https://t.me/Haniemir';
+  const haniehTelegramUrl = 'https://t.me/Ellizrr';
 
   return (
     <div

@@ -544,7 +544,10 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? 'شماره کارت:' : 'Card Number:'}
                     </span>
                     <div className="flex items-center justify-between gap-1.5 p-1.5 sm:p-2.5 rounded-lg bg-[#221e1a] border border-[#c27847]/40">
-                      <span className="font-mono text-[11px] xs:text-xs sm:text-sm font-bold text-[#fdfbf7] tracking-wider dir-ltr select-all whitespace-nowrap overflow-hidden">
+                      <span
+                        dir="ltr"
+                        className="font-mono text-[11px] xs:text-xs sm:text-sm font-bold text-[#fdfbf7] tracking-wider select-all whitespace-nowrap overflow-hidden"
+                      >
                         {lang === 'fa' ? PAYMENT_CONFIG.cardNumberFormatted : PAYMENT_CONFIG.cardNumber}
                       </span>
                       <button
@@ -584,7 +587,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   </p>
 
                   <a
-                    href={PAYMENT_CONFIG.supportLink}
+                    href="https://t.me/Haniemir"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full min-h-[36px] sm:min-h-[40px] flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:py-2 rounded-xl bg-[#2b2520] hover:bg-[#362e28] border border-[#c27847]/40 text-[#e59b67] hover:text-[#f5be98] text-[11.5px] sm:text-sm font-bold transition-all shadow-sm"

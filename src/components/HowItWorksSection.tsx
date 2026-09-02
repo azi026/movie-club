@@ -1,10 +1,12 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight, Clapperboard, Coffee, MessageSquare } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useSession } from '../context/SessionContext';
 import { HOW_IT_WORKS_STEPS } from '../data/movieClubData';
 
 export const HowItWorksSection: React.FC = () => {
   const { isRtl, lang, t } = useLanguage();
+  const { session } = useSession();
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
@@ -56,7 +58,15 @@ export const HowItWorksSection: React.FC = () => {
           {HOW_IT_WORKS_STEPS.map((step, index) => {
             const isLast = index === HOW_IT_WORKS_STEPS.length - 1;
             const title = lang === 'fa' ? step.titleFa : step.titleEn;
-            const desc = lang === 'fa' ? step.descFa : step.descEn;
+            
+            let desc = lang === 'fa' ? step.descFa : step.descEn;
+            if (step.stepNumber === 2 && session) {
+              const day = lang === 'fa' ? session.dayOfWeekFa : session.dayOfWeekEn;
+              const time = session.time || '17:00';
+              desc = lang === 'fa'
+                ? `${day} ساعت ${time} در کافه دور هم جمع می‌شویم.`
+                : `Meet us at the cozy café on ${day} at ${time}.`;
+            }
 
             return (
               <div key={step.stepNumber} className="relative flex flex-col items-center w-full">

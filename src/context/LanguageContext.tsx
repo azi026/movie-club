@@ -14,7 +14,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Nav
     'nav.home': 'صفحه اصلی',
     'nav.this_week_film': 'فیلم این هفته',
-    'nav.how_it_works': 'چطور کار می‌کند',
+    'nav.how_it_works': 'روند دورهمی',
     'nav.about': 'درباره ما',
     'nav.contact': 'تماس با ما',
     'nav.reserve': 'رزرو جای من',
@@ -35,8 +35,8 @@ const translations: Record<Language, Record<string, string>> = {
     'hero.cta_secondary': 'درباره این فیلم',
 
     // How it works
-    'how.title': 'چطور کار می‌کند؟',
-    'how.subtitle': 'ساده و بدون دغدغه؛ ۳ گام تا یک تجربه دوستانه',
+    'how.title': 'روند دورهمی',
+    'how.subtitle': '۳ گام ساده برای یک تجربه دوستانه',
 
     // Mid cards
     'film.badge': 'فیلم این هفته',
@@ -92,7 +92,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Nav
     'nav.home': 'Home',
     'nav.this_week_film': "This Week's Film",
-    'nav.how_it_works': 'How It Works',
+    'nav.how_it_works': 'The Experience',
     'nav.about': 'About Us',
     'nav.contact': 'Contact',
     'nav.reserve': 'Reserve My Seat',
