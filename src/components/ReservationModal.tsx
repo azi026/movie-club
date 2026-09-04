@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useSession } from '../context/SessionContext';
-import { PAYMENT_CONFIG } from '../data/movieClubData';
+// Cost/Fee: commented out PAYMENT_CONFIG for free reservation
+// import { PAYMENT_CONFIG } from '../data/movieClubData';
 import { supabase } from '../lib/supabase';
 import { ReservationPayload } from '../types';
 
@@ -40,11 +41,13 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
     email: '',
     englishLevel: 'intermediate',
     notes: '',
-    drinkPreference: 'لاته / قهوه دمی',
+    // Favorite drink removed for simplified free reservation flow
+    // drinkPreference: 'لاته / قهوه دمی',
   });
   const [reservationCode, setReservationCode] = useState<string>('');
-  const [hasTransferred, setHasTransferred] = useState<boolean>(false);
-  const [copied, setCopied] = useState<boolean>(false);
+  // Payment verification states removed / commented out for free reservation:
+  // const [hasTransferred, setHasTransferred] = useState<boolean>(false);
+  // const [copied, setCopied] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -79,6 +82,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
     );
   }
 
+  /* Cost/Fee: handleCopyCardNumber commented out for free reservation
   const handleCopyCardNumber = () => {
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(PAYMENT_CONFIG.cardNumber);
@@ -86,6 +90,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
+  */
 
   const handleNextStep = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,7 +129,8 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
           p_phone: formData.contact.trim(),
           p_email: formData.email.trim() || null,
           p_english_level: formData.englishLevel,
-          p_drink: formData.drinkPreference?.trim() || null,
+          // Favorite drink removed from reservation form
+          p_drink: null,
         });
 
         if (error) {
@@ -184,8 +190,9 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
   const handleResetAndClose = () => {
     if (isSubmitting) return;
     setStep(1);
-    setHasTransferred(false);
-    setCopied(false);
+    // Cost/Payment state reset commented out:
+    // setHasTransferred(false);
+    // setCopied(false);
     setSubmitError(null);
     setFormData({
       fullName: '',
@@ -193,7 +200,8 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
       email: '',
       englishLevel: 'intermediate',
       notes: '',
-      drinkPreference: 'لاته / قهوه دمی',
+      // Favorite drink removed from form:
+      // drinkPreference: 'لاته / قهوه دمی',
     });
     onClose();
   };
@@ -418,7 +426,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
 
                 <div>
                   <label className="block text-xs font-semibold text-[#d4c7ba] mb-1 sm:mb-1.5">
-                    {lang === 'fa' ? 'ایمیل (جهت ارسال یادآوری و سوالات)' : 'Email'}
+                    {lang === 'fa' ? 'ایمیل (اختیاری)' : 'Email (optional)'}
                   </label>
                   <input
                     type="email"
@@ -431,6 +439,8 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   />
                 </div>
 
+                {/* Favorite drink field removed/commented out completely */}
+                {/*
                 <div>
                   <label className="block text-xs font-semibold text-[#d4c7ba] mb-1 sm:mb-1.5">
                     {lang === 'fa' ? 'نوشیدنی مورد علاقه در کافه (اختیاری)' : 'Preferred Drink (Optional)'}
@@ -445,6 +455,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                     className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#241f1c] border border-white/15 text-xs sm:text-sm text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847]"
                   />
                 </div>
+                */}
               </div>
 
               <div className="flex gap-2.5 sm:gap-3 pt-1 sm:pt-2">
@@ -459,13 +470,15 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   type="submit"
                   className="w-2/3 min-h-[40px] sm:min-h-[44px] py-2 sm:py-3 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#c27847]/30 transition-all cursor-pointer"
                 >
-                  {lang === 'fa' ? 'مرحله بعد: پرداخت و تکمیل رزرو' : 'Next: Payment'}
+                  {/* Fee-related text commented out for free reservation:
+                  {lang === 'fa' ? 'مرحله بعد: پرداخت و تکمیل رزرو' : 'Next: Payment'} */}
+                  {lang === 'fa' ? 'مرحله بعد: تکمیل رزرو' : 'Next: Complete Reservation'}
                 </button>
               </div>
             </form>
           )}
 
-          {/* Step 3: Card-to-Card Payment Step */}
+          {/* Step 3: Confirmation Step */}
           {step === 3 && (
             <form onSubmit={handleNextStep} className="space-y-2.5 sm:space-y-3.5 animate-fade-in">
               {/* Compact Reservation Summary */}
@@ -504,6 +517,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? session.locationNameFa : session.locationNameEn}
                     </span>
                   </div>
+                  {/* Cost/Fee: Entry fee display commented out for free reservation
                   <div>
                     <span className="text-[#8e8073] block text-[9.5px] sm:text-[10px] leading-tight">
                       {lang === 'fa' ? 'هزینه حضور:' : 'Entry Fee:'}
@@ -512,10 +526,45 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                       {lang === 'fa' ? `${PAYMENT_CONFIG.priceFormattedFa} تومان` : PAYMENT_CONFIG.priceFormattedEn}
                     </span>
                   </div>
+                  */}
+                  <div>
+                    <span className="text-[#8e8073] block text-[9.5px] sm:text-[10px] leading-tight">
+                      {lang === 'fa' ? 'نام شرکت‌کننده:' : 'Participant:'}
+                    </span>
+                    <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
+                      {formData.fullName || (lang === 'fa' ? '—' : '—')}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Card to Card Box - Strong Visual Focus */}
+              {/* Free Reservation Confirmation Box */}
+              <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#231f1c] border border-white/10 space-y-1.5 sm:space-y-2">
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#f5f1eb]">
+                  <Sparkles className="w-4 h-4 text-[#e59b67] shrink-0" />
+                  <span>{lang === 'fa' ? 'تأیید نهایی رزرو رایگان' : 'Confirm Free Reservation'}</span>
+                </div>
+                <p className="text-[10.5px] sm:text-xs text-[#b8ab9f] leading-relaxed">
+                  {lang === 'fa'
+                    ? 'شرکت در این دورهمی رایگان است. جهت هماهنگی فضا با کافه و رزرو قطعی جای شما، لطفاً درخواست خود را ثبت کنید.'
+                    : 'Attending this gathering is free. To coordinate the space and guarantee your seat, please confirm your reservation below.'}
+                </p>
+              </div>
+
+              {/* Submission Error Banner */}
+              {submitError && (
+                <div
+                  className={`p-2.5 sm:p-3 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs flex items-center gap-2 ${
+                    isRtl ? 'text-right' : 'text-left'
+                  }`}
+                >
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span className="leading-snug">{submitError}</span>
+                </div>
+              )}
+
+              {/* --- START OF COMMENTED-OUT RESERVATION FEE / PAYMENT SECTION --- */}
+              {/*
               <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-b from-[#251f1a] to-[#1e1916] border border-[#c27847]/35 space-y-2 sm:space-y-3 shadow-lg">
                 <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-[#f5f1eb]">
                   <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#e59b67] shrink-0" />
@@ -528,7 +577,6 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                     : 'To complete your reservation, please transfer the amount to the following card number.'}
                 </p>
 
-                {/* Amount and Card Display */}
                 <div className="p-2.5 sm:p-3 rounded-xl bg-[#141211] border border-[#c27847]/25 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-[10.5px] sm:text-xs text-[#9e8f82]">
@@ -578,7 +626,6 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   </div>
                 </div>
 
-                {/* Instructions & Support CTA */}
                 <div className="space-y-1.5 pt-0.5">
                   <p className="text-[10.5px] sm:text-xs text-[#b8ab9f] leading-snug sm:leading-relaxed">
                     {lang === 'fa'
@@ -598,19 +645,6 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   </a>
                 </div>
 
-                {/* Submission Error Banner */}
-                {submitError && (
-                  <div
-                    className={`p-2.5 sm:p-3 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs flex items-center gap-2 ${
-                      isRtl ? 'text-right' : 'text-left'
-                    }`}
-                  >
-                    <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                    <span className="leading-snug">{submitError}</span>
-                  </div>
-                )}
-
-                {/* Verification Checkbox */}
                 <label className="flex items-start gap-2 pt-1.5 border-t border-white/10 cursor-pointer select-none">
                   <input
                     type="checkbox"
@@ -626,6 +660,8 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   </span>
                 </label>
               </div>
+              */}
+              {/* --- END OF COMMENTED-OUT RESERVATION FEE / PAYMENT SECTION --- */}
 
               {/* Action Buttons */}
               <div className="flex gap-2 sm:gap-3 pt-0.5 sm:pt-1">
@@ -639,9 +675,15 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 </button>
                 <button
                   type="submit"
+                  /* Cost/Fee: commented out payment verification requirement:
                   disabled={!hasTransferred || isSubmitting || isFull}
+                  */
+                  disabled={isSubmitting || isFull}
                   className={`w-2/3 min-h-[38px] sm:min-h-[44px] py-1.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold shadow-lg transition-all flex items-center justify-center gap-2 ${
+                    /* Cost/Fee: commented out transfer check:
                     hasTransferred && !isSubmitting && !isFull
+                    */
+                    !isSubmitting && !isFull
                       ? 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-[#c27847]/30 cursor-pointer active:scale-98'
                       : 'bg-white/10 text-[#73675c] border border-white/5 cursor-not-allowed opacity-70'
                   }`}
@@ -654,32 +696,41 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   ) : (
                     isFull
                       ? (lang === 'fa' ? 'ظرفیت تکمیل شده است' : 'Fully Booked')
-                      : (lang === 'fa' ? 'ثبت درخواست رزرو' : 'Submit Reservation Request')
+                      : (lang === 'fa' ? 'ثبت نهایی رزرو' : 'Confirm Reservation')
                   )}
                 </button>
               </div>
             </form>
           )}
 
-          {/* Step 4: Pending Confirmation Pass */}
+          {/* Step 4: Confirmation Pass */}
           {step === 4 && (
             <div className="space-y-4 sm:space-y-5 text-center animate-fade-in py-1">
               <div className="inline-flex p-3 rounded-full bg-[#382618]/90 border border-[#c27847]/50 text-[#e59b67] shadow-lg">
-                <Hourglass className="w-8 h-8 sm:w-10 sm:h-10 animate-pulse" />
+                {/* Cost/Fee: Hourglass pulse commented out for free reservation */}
+                {/* <Hourglass className="w-8 h-8 sm:w-10 sm:h-10 animate-pulse" /> */}
+                <Check className="w-8 h-8 sm:w-10 sm:h-10 text-[#e59b67]" />
               </div>
 
               <div className="space-y-1">
                 <h4 className="text-base sm:text-xl font-bold text-white">
-                  {lang === 'fa' ? 'درخواست رزرو شما ثبت شد ✓' : 'Reservation Request Submitted ✓'}
+                  {lang === 'fa' ? 'رزرو شما با موفقیت ثبت شد ✓' : 'Reservation Confirmed ✓'}
                 </h4>
+                {/* Cost/Fee: Payment receipt verification note commented out for free reservation
                 <p className="text-[11px] sm:text-xs text-[#c2b4a5] max-w-md mx-auto leading-relaxed">
                   {lang === 'fa'
                     ? 'رسید پرداخت شما توسط پشتیبانی بررسی می‌شود. پس از تأیید پرداخت، رزرو شما نهایی خواهد شد.'
                     : 'Your payment receipt is being reviewed by support. Once verified, your reservation will be finalized.'}
                 </p>
+                */}
+                <p className="text-[11px] sm:text-xs text-[#c2b4a5] max-w-md mx-auto leading-relaxed">
+                  {lang === 'fa'
+                    ? 'جای شما برای این دورهمی ثبت شد. مشتاق دیدار شما در کافه هستیم!'
+                    : 'Your seat has been reserved. Looking forward to seeing you at the café!'}
+                </p>
               </div>
 
-              {/* Reservation Pass with Pending Amber/Copper Status */}
+              {/* Reservation Pass */}
               <div className="p-4 sm:p-5 rounded-2xl bg-[#221e1a] border border-[#c27847]/40 text-right space-y-3 shadow-xl relative overflow-hidden">
                 <div className="flex items-center justify-between pb-2.5 border-b border-white/10">
                   <span className="text-[11px] sm:text-xs font-bold text-[#e59b67] tracking-widest font-cinzel">
@@ -691,9 +742,15 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 </div>
 
                 {/* Status Badge */}
+                {/* Cost/Fee: Pending payment verification badge commented out
                 <div className="flex items-center justify-center py-1.5 px-3 rounded-xl bg-[#362519] border border-[#e59b67]/40 text-[#f5be98] text-xs font-bold gap-2">
                   <Hourglass className="w-3.5 h-3.5 text-[#e59b67]" />
                   <span>{lang === 'fa' ? 'در انتظار تأیید پرداخت' : 'Pending Payment Verification'}</span>
+                </div>
+                */}
+                <div className="flex items-center justify-center py-1.5 px-3 rounded-xl bg-[#27221e] border border-[#c27847]/40 text-[#e59b67] text-xs font-bold gap-2">
+                  <Check className="w-3.5 h-3.5 text-[#e59b67]" />
+                  <span>{lang === 'fa' ? 'رزرو تأیید شده' : 'Reservation Confirmed'}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5 text-xs pt-1">
