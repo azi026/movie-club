@@ -545,9 +545,15 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   <span>{lang === 'fa' ? 'تأیید نهایی رزرو رایگان' : 'Confirm Free Reservation'}</span>
                 </div>
                 <p className="text-[10.5px] sm:text-xs text-[#b8ab9f] leading-relaxed">
-                  {lang === 'fa'
-                    ? 'شرکت در این دورهمی رایگان است. جهت هماهنگی فضا با کافه و رزرو قطعی جای شما، لطفاً درخواست خود را ثبت کنید.'
-                    : 'Attending this gathering is free. To coordinate the space and guarantee your seat, please confirm your reservation below.'}
+                  {lang === 'fa' ? (
+                    <>
+                      شرکت در <strong className="font-bold text-[#f5f1eb]">اولین جلسه دورهمی</strong> رایگان است. جهت هماهنگی فضا با کافه و رزرو قطعی جای شما، لطفاً درخواست خود را ثبت کنید.
+                    </>
+                  ) : (
+                    <>
+                      Attending your <strong className="font-bold text-[#f5f1eb]">first gathering</strong> is free. To coordinate the space and guarantee your seat, please confirm your reservation below.
+                    </>
+                  )}
                 </p>
               </div>
 

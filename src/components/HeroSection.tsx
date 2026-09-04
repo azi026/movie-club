@@ -91,20 +91,30 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div id="hero-cta-buttons" className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full max-w-xs sm:max-w-none">
-          <button
-            id="hero-primary-cta"
-            onClick={isFull ? undefined : onOpenReservation}
-            disabled={isFull}
-            className={`w-full sm:w-auto min-h-[48px] flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm sm:text-base font-bold transition-all duration-200 ${
-              isFull
-                ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
-                : 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-lg shadow-[#c27847]/30 hover:shadow-[#c27847]/45 active:scale-95 cursor-pointer'
-            }`}
-          >
-            <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>{isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('hero.cta_primary')}</span>
-          </button>
+        <div id="hero-cta-buttons" className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-2.5 sm:gap-3 w-full max-w-xs sm:max-w-none">
+          <div className="flex flex-col items-center w-full sm:w-auto">
+            <button
+              id="hero-primary-cta"
+              onClick={isFull ? undefined : onOpenReservation}
+              disabled={isFull}
+              className={`w-full sm:w-auto min-h-[48px] flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm sm:text-base font-bold transition-all duration-200 ${
+                isFull
+                  ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
+                  : 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-lg shadow-[#c27847]/30 hover:shadow-[#c27847]/45 active:scale-95 cursor-pointer'
+              }`}
+            >
+              <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span>{isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('hero.cta_primary')}</span>
+            </button>
+
+            {/* First Gathering Free Supporting Note */}
+            <p
+              id="hero-free-first-gathering-note"
+              className="text-[11px] sm:text-xs text-[#e59b67] font-medium mt-1.5 sm:mt-2 tracking-wide text-center"
+            >
+              {lang === 'fa' ? 'اولین دورهمی، مهمان ما باشید ✨' : 'Your first gathering is our treat ✨'}
+            </p>
+          </div>
 
           <button
             id="hero-secondary-cta"
