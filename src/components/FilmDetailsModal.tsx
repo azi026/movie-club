@@ -166,7 +166,7 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
                 <div>
                   <span className="text-[#8e7f72] block">{t('film.director')}</span>
                   <span className="font-semibold text-white mt-1 block">
-                    {lang === 'fa' ? movie.directorFa : movie.director}
+                    {lang === 'fa' ? movie.directorFa : movie.director}                    
                   </span>
                 </div>
                 <div>
