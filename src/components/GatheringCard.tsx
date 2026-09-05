@@ -9,9 +9,11 @@ interface GatheringCardProps {
 }
 
 export const GatheringCard: React.FC<GatheringCardProps> = ({ onOpenReservation }) => {
-  const { lang, isRtl, t } = useLanguage();
-  const { hasActiveSession, session, isFull, getDateDisplay, getTimeDisplay } = useSession();
-
+  const { lang, isRtl, t } = useLanguage();  
+  const { hasActiveSession, session, isLoading, isFull, getDateDisplay, getTimeDisplay } = useSession();
+if (isLoading) {
+  return null;
+}
   if (!hasActiveSession || !session) {
     return (
       <section id="this-week-gathering" className="w-full py-8 sm:py-11 px-4 sm:px-6 lg:px-8 bg-[#121110]">

@@ -17,7 +17,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.how_it_works': 'روند دورهمی',
     'nav.about': 'درباره ما',
     'nav.contact': 'تماس با ما',
-    'nav.reserve': 'رزرو جای من',
+    'nav.reserve': 'رزرو صندلی',
     'brand.title': 'MOVIE CLUB',
     'brand.subtitle': 'ENGLISH CONVERSATION CLUB',
 
@@ -31,7 +31,7 @@ const translations: Record<Language, Record<string, string>> = {
     'hero.pill_cafe': 'دورهمی در کافه',
     'hero.pill_convo': 'گفتگوی انگلیسی',
     'hero.reassurance_badge': 'لازم نیست انگلیسی‌ات عالی باشه؛ فقط کافیه بخوای حرف بزنی.',
-    'hero.cta_primary': 'رزرو جای من',
+    'hero.cta_primary': 'رزرو صندلی',
     'hero.cta_secondary': 'درباره این فیلم',
 
     // How it works
@@ -57,7 +57,7 @@ const translations: Record<Language, Record<string, string>> = {
     'gathering.title': 'دورهمی این هفته',
     'gathering.quote': 'یک عصر صمیمی با فیلم، گفتگو و قهوه؛ جایی برای ارتباط، شنیدن دیدگاه‌های تازه و دوستان جدید.',
     'gathering.small_community': 'جمعمون کوچیکه تا فرصت گفتگو برای همه باشه.',
-    'gathering.reserve_btn': 'رزرو جای من',
+    'gathering.reserve_btn': 'رزرو صندلی',
     'gathering.fully_booked': 'ظرفیت این دورهمی تکمیل شده',
     'gathering.time_label': 'ساعت',
 
