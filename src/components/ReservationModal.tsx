@@ -456,8 +456,8 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                     }
                     placeholder={
                       lang === "fa"
-                        ? "۰۹۱۲۰۰۰۰۰۰۰ یا @username"
-                        : "+1... or @telegram"
+                        ? "شماره تماس یا آیدی تلگرام"
+                        : "Phone number or Telegram ID"
                     }
                     className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#241f1c] border border-white/15 text-xs sm:text-sm text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847]"
                   />
