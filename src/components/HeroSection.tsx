@@ -1,8 +1,16 @@
-import React from 'react';
-import { Clapperboard, Coffee, MessageSquare, Play, Sparkles, Ticket } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
-import { useSession } from '../context/SessionContext';
-import { HERO_ASSET } from '../data/movieClubData';
+import React from "react";
+import {
+  Clapperboard,
+  Coffee,
+  MessageSquare,
+  Play,
+  Sparkles,
+  Ticket,
+} from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { useSession } from "../context/SessionContext";
+import { HERO_ASSET } from "../data/movieClubData";
+import { LazyImage } from "./LazyImage";
 
 interface HeroSectionProps {
   onOpenReservation: () => void;
@@ -23,7 +31,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     >
       {/* Background Cinematic Image with warm cafe tones */}
       <div className="absolute inset-0 z-0">
-        <img
+        <LazyImage
           src={HERO_ASSET}
           alt="Movie Club Cafe Conversation"
           className="w-full h-full object-cover object-[center_30%] sm:object-center"
@@ -41,7 +49,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1 rounded-full bg-[#241f1c]/90 border border-[#e59b67]/30 text-[#f0dfd1] text-[11px] sm:text-xs font-medium mb-3 sm:mb-4 shadow-md backdrop-blur-sm"
         >
           <Clapperboard className="w-3.5 h-3.5 text-[#e59b67] shrink-0" />
-          <span>{t('hero.badge')}</span>
+          <span>{t("hero.badge")}</span>
         </div>
 
         {/* Main Headline */}
@@ -49,9 +57,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           id="hero-main-title"
           className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#fdfbf7] leading-[1.22] sm:leading-[1.18] mb-3 sm:mb-4 max-w-3xl"
         >
-          <span>{t('hero.title_line1')}</span>
+          <span>{t("hero.title_line1")}</span>
           <br />
-          <span className="text-[#e59b67] font-black">{t('hero.title_line2')}</span>
+          <span className="text-[#e59b67] font-black">
+            {t("hero.title_line2")}
+          </span>
         </h1>
 
         {/* Subtitle / Description */}
@@ -59,7 +69,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           id="hero-description-text"
           className="text-xs sm:text-base lg:text-lg text-[#d4c8be] max-w-2xl mx-auto font-normal leading-relaxed mb-4 sm:mb-5 px-1 sm:px-0"
         >
-          {t('hero.desc')}
+          {t("hero.desc")}
         </p>
 
         {/* 3 Core Experience Pillars (Film • Café • Conversation) - quiet and compact on mobile */}
@@ -69,15 +79,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         >
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-[#1c1917]/70 sm:bg-[#1c1917]/85 border border-white/10 text-[11px] sm:text-sm text-[#ded3c5] sm:text-[#e8ded2] backdrop-blur-sm">
             <Clapperboard className="w-3 h-3 sm:w-4 sm:h-4 text-[#e59b67] shrink-0" />
-            <span>{t('hero.pill_film')}</span>
+            <span>{t("hero.pill_film")}</span>
           </div>
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-[#1c1917]/70 sm:bg-[#1c1917]/85 border border-white/10 text-[11px] sm:text-sm text-[#ded3c5] sm:text-[#e8ded2] backdrop-blur-sm">
             <Coffee className="w-3 h-3 sm:w-4 sm:h-4 text-[#e59b67] shrink-0" />
-            <span>{t('hero.pill_cafe')}</span>
+            <span>{t("hero.pill_cafe")}</span>
           </div>
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-[#1c1917]/70 sm:bg-[#1c1917]/85 border border-white/10 text-[11px] sm:text-sm text-[#ded3c5] sm:text-[#e8ded2] backdrop-blur-sm">
             <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-[#e59b67] shrink-0" />
-            <span>{t('hero.pill_convo')}</span>
+            <span>{t("hero.pill_convo")}</span>
           </div>
         </div>
 
@@ -87,11 +97,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           className="inline-flex items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-sm text-[#bdafa2] sm:text-[#d4c8be] mb-5 sm:mb-6 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-white/5 border border-white/10 max-w-full text-center leading-relaxed"
         >
           <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#e59b67] shrink-0" />
-          <span>{t('hero.reassurance_badge')}</span>
+          <span>{t("hero.reassurance_badge")}</span>
         </div>
 
         {/* Action Buttons */}
-        <div id="hero-cta-buttons" className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-2.5 sm:gap-3 w-full max-w-xs sm:max-w-none">
+        <div
+          id="hero-cta-buttons"
+          className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-2.5 sm:gap-3 w-full max-w-xs sm:max-w-none"
+        >
           <div className="flex flex-col items-center w-full sm:w-auto">
             <button
               id="hero-primary-cta"
@@ -99,12 +112,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               disabled={isFull}
               className={`w-full sm:w-auto min-h-[48px] flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm sm:text-base font-bold transition-all duration-200 ${
                 isFull
-                  ? 'bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none'
-                  : 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-lg shadow-[#c27847]/30 hover:shadow-[#c27847]/45 active:scale-95 cursor-pointer'
+                  ? "bg-[#332b26] text-[#a39487] border border-white/10 cursor-not-allowed opacity-85 shadow-none"
+                  : "bg-[#c27847] hover:bg-[#a86134] text-white shadow-lg shadow-[#c27847]/30 hover:shadow-[#c27847]/45 active:scale-95 cursor-pointer"
               }`}
             >
               <Ticket className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span>{isFull ? (lang === 'fa' ? 'ظرفیت این دورهمی تکمیل شده' : 'This gathering is fully booked') : t('hero.cta_primary')}</span>
+              <span>
+                {isFull
+                  ? lang === "fa"
+                    ? "ظرفیت این دورهمی تکمیل شده"
+                    : "This gathering is fully booked"
+                  : t("hero.cta_primary")}
+              </span>
             </button>
 
             {/* First Gathering Free Supporting Note */}
@@ -112,7 +131,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               id="hero-free-first-gathering-note"
               className="text-[11px] sm:text-xs text-[#e59b67] font-medium mt-1.5 sm:mt-2 tracking-wide text-center"
             >
-              {lang === 'fa' ? 'اولین دورهمی، مهمان ما باشید ✨' : 'Your first gathering is our treat ✨'}
+              {lang === "fa"
+                ? "اولین دورهمی، مهمان ما باشید ✨"
+                : "Your first gathering is our treat ✨"}
             </p>
           </div>
 
@@ -122,7 +143,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="w-full sm:w-auto min-h-[48px] flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-black/40 hover:bg-white/10 text-[#f5f1eb] hover:text-white text-sm sm:text-base font-medium border border-white/15 hover:border-white/30 backdrop-blur-md transition-all duration-200 active:scale-95 cursor-pointer"
           >
             <Play className="w-3.5 h-3.5 text-[#e59b67] fill-[#e59b67]" />
-            <span>{t('hero.cta_secondary')}</span>
+            <span>{t("hero.cta_secondary")}</span>
           </button>
         </div>
       </div>

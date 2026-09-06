@@ -174,6 +174,7 @@ export const SessionProvider: React.FC<{ children: ReactNode }> = ({
         .order("id", { ascending: false })
         .limit(1)
         .maybeSingle();
+      console.log("SESSION DATA:", sessionData);      
 
       if (sessionErr) {
         console.warn("Supabase sessions query note:", sessionErr.message);
@@ -272,6 +273,7 @@ export const SessionProvider: React.FC<{ children: ReactNode }> = ({
             .select("*")
             .eq("id", movieId)
             .maybeSingle();
+            console.log("MOVIE DATA:", movieData);
 
           if (movieErr) {
             console.warn("Supabase movie query note:", movieErr.message);
