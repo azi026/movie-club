@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   AlertCircle,
   Calendar,
@@ -17,34 +17,45 @@ import {
   Ticket,
   Users,
   X,
-} from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
-import { useSession } from '../context/SessionContext';
+} from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
+import { useSession } from "../context/SessionContext";
 // Cost/Fee: commented out PAYMENT_CONFIG for free reservation
 // import { PAYMENT_CONFIG } from '../data/movieClubData';
-import { supabase } from '../lib/supabase';
-import { ReservationPayload } from '../types';
+import { supabase } from "../lib/supabase";
+import { ReservationPayload } from "../types";
 
 interface ReservationModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onClose }) => {
+export const ReservationModal: React.FC<ReservationModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const { lang, isRtl, t } = useLanguage();
-  const { hasActiveSession, session, movie, isFull, refreshCapacity, getDateDisplay, getTimeDisplay } = useSession();
+  const {
+    hasActiveSession,
+    session,
+    movie,
+    isFull,
+    refreshCapacity,
+    getDateDisplay,
+    getTimeDisplay,
+  } = useSession();
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [formData, setFormData] = useState<ReservationPayload>({
-    fullName: '',
-    contact: '',
-    email: '',
-    englishLevel: 'intermediate',
-    notes: '',
+    fullName: "",
+    contact: "",
+    email: "",
+    englishLevel: "intermediate",
+    notes: "",
     // Favorite drink removed for simplified free reservation flow
     // drinkPreference: 'لاته / قهوه دمی',
   });
-  const [reservationCode, setReservationCode] = useState<string>('');
+  const [reservationCode, setReservationCode] = useState<string>("");
   // Payment verification states removed / commented out for free reservation:
   // const [hasTransferred, setHasTransferred] = useState<boolean>(false);
   // const [copied, setCopied] = useState<boolean>(false);
@@ -69,13 +80,15 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
             <Calendar className="w-6 h-6" />
           </div>
           <h3 className="text-lg font-bold text-[#f5f1eb]">
-            {lang === 'fa' ? 'جلسه بعدی به‌زودی اعلام می‌شود' : 'Next gathering will be announced soon'}
+            {lang === "fa"
+              ? "جلسه بعدی به‌زودی اعلام می‌شود"
+              : "Next gathering will be announced soon"}
           </h3>
           <button
             onClick={onClose}
             className="px-6 py-2.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs font-bold transition-colors cursor-pointer"
           >
-            {lang === 'fa' ? 'متوجه شدم' : 'Got it'}
+            {lang === "fa" ? "متوجه شدم" : "Got it"}
           </button>
         </div>
       </div>
@@ -103,18 +116,18 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
 
       if (isFull) {
         setSubmitError(
-          lang === 'fa'
-            ? 'متأسفانه ظرفیت این جلسه تکمیل شده است.'
-            : 'Sorry, this session is now fully booked.'
+          lang === "fa"
+            ? "متأسفانه ظرفیت این جلسه تکمیل شده است."
+            : "Sorry, this session is now fully booked.",
         );
         return;
       }
 
       if (!session?.id) {
         setSubmitError(
-          lang === 'fa'
-            ? 'جلسه فعالی برای ثبت رزرو یافت نشد.'
-            : 'No active session found for reservation.'
+          lang === "fa"
+            ? "جلسه فعالی برای ثبت رزرو یافت نشد."
+            : "No active session found for reservation.",
         );
         return;
       }
@@ -123,46 +136,52 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
       setSubmitError(null);
 
       try {
-        const { data, error } = await supabase.rpc('create_session_reservation', {
-          p_session_id: Number(session.id),
-          p_full_name: formData.fullName.trim(),
-          p_phone: formData.contact.trim(),
-          p_email: formData.email.trim() || null,
-          p_english_level: formData.englishLevel,
-          // Favorite drink removed from reservation form
-          p_drink: null,
-        });
+        const { data, error } = await supabase.rpc(
+          "create_session_reservation",
+          {
+            p_session_id: Number(session.id),
+            p_full_name: formData.fullName.trim(),
+            p_phone: formData.contact.trim(),
+            p_email: formData.email.trim() || null,
+            p_english_level: formData.englishLevel,
+            // Favorite drink removed from reservation form
+            p_drink: null,
+          },
+        );
 
         if (error) {
-          console.error('Supabase error calling create_session_reservation RPC:', error);
+          console.error(
+            "Supabase error calling create_session_reservation RPC:",
+            error,
+          );
           setSubmitError(
-            lang === 'fa'
-              ? 'خطا در ثبت اطلاعات در پایگاه داده. لطفاً دوباره تلاش کنید.'
-              : 'Error saving reservation to the database. Please try again.'
+            lang === "fa"
+              ? "خطا در ثبت اطلاعات در پایگاه داده. لطفاً دوباره تلاش کنید."
+              : "Error saving reservation to the database. Please try again.",
           );
           setIsSubmitting(false);
           return;
         }
 
-        if (data && typeof data === 'object') {
+        if (data && typeof data === "object") {
           if (data.success === false) {
-            if (data.error === 'SESSION_FULL') {
+            if (data.error === "SESSION_FULL") {
               setSubmitError(
-                lang === 'fa'
-                  ? 'متأسفانه ظرفیت این جلسه تکمیل شده است.'
-                  : 'Sorry, this session is now fully booked.'
+                lang === "fa"
+                  ? "متأسفانه ظرفیت این جلسه تکمیل شده است."
+                  : "Sorry, this session is now fully booked.",
               );
-            } else if (data.error === 'SESSION_NOT_FOUND') {
+            } else if (data.error === "SESSION_NOT_FOUND") {
               setSubmitError(
-                lang === 'fa'
-                  ? 'این جلسه دیگر برای رزرو فعال نیست.'
-                  : 'This session is no longer available for reservation.'
+                lang === "fa"
+                  ? "این جلسه دیگر برای رزرو فعال نیست."
+                  : "This session is no longer available for reservation.",
               );
             } else {
               setSubmitError(
-                lang === 'fa'
-                  ? 'خطا در ثبت رزرو. لطفاً دوباره تلاش کنید.'
-                  : 'Error saving reservation. Please try again.'
+                lang === "fa"
+                  ? "خطا در ثبت رزرو. لطفاً دوباره تلاش کنید."
+                  : "Error saving reservation. Please try again.",
               );
             }
             setIsSubmitting(false);
@@ -175,11 +194,11 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
         setStep(4);
         refreshCapacity();
       } catch (err: any) {
-        console.error('Unexpected reservation error:', err);
+        console.error("Unexpected reservation error:", err);
         setSubmitError(
-          lang === 'fa'
-            ? 'خطای غیرمنتظره در ارتباط با سرور. لطفاً دوباره تلاش کنید.'
-            : 'An unexpected connection error occurred. Please try again.'
+          lang === "fa"
+            ? "خطای غیرمنتظره در ارتباط با سرور. لطفاً دوباره تلاش کنید."
+            : "An unexpected connection error occurred. Please try again.",
         );
       } finally {
         setIsSubmitting(false);
@@ -195,11 +214,11 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
     // setCopied(false);
     setSubmitError(null);
     setFormData({
-      fullName: '',
-      contact: '',
-      email: '',
-      englishLevel: 'intermediate',
-      notes: '',
+      fullName: "",
+      contact: "",
+      email: "",
+      englishLevel: "intermediate",
+      notes: "",
       // Favorite drink removed from form:
       // drinkPreference: 'لاته / قهوه دمی',
     });
@@ -225,17 +244,18 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
             </div>
             <div>
               <h3 className="text-xs sm:text-lg font-bold text-[#fdfbf7]">
-                {t('modal.reserve_title')}
+                {t("modal.reserve_title")}
               </h3>
               <p className="text-[10px] sm:text-xs text-[#a39487]">
-                {lang === 'fa' ? movie.titleFa : movie.title} • {getDateDisplay(lang)}
+                {lang === "fa" ? movie.titleFa : movie.title} •{" "}
+                {getDateDisplay(lang)}
               </p>
             </div>
           </div>
           <button
             onClick={handleResetAndClose}
             className="p-1 sm:p-2 rounded-lg sm:rounded-xl hover:bg-white/10 text-[#a39487] hover:text-white transition-colors cursor-pointer"
-            aria-label={t('modal.close')}
+            aria-label={t("modal.close")}
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
@@ -249,108 +269,111 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
               <div
                 className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full transition-all ${
                   step === 1
-                    ? 'bg-[#c27847] text-white shadow-sm'
+                    ? "bg-[#c27847] text-white shadow-sm"
                     : step > 1
-                    ? 'bg-white/10 text-[#e59b67]'
-                    : 'bg-white/5 text-[#8a7b6f]'
+                      ? "bg-white/10 text-[#e59b67]"
+                      : "bg-white/5 text-[#8a7b6f]"
                 }`}
               >
-                <span>{lang === 'fa' ? '۱' : '1'}</span>
-                <span className="hidden xs:inline">{t('modal.step1')}</span>
+                <span>{lang === "fa" ? "۱" : "1"}</span>
+                <span className="hidden xs:inline">{t("modal.step1")}</span>
               </div>
               <span className="text-white/20 text-[10px]">——</span>
               <div
                 className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full transition-all ${
                   step === 2
-                    ? 'bg-[#c27847] text-white shadow-sm'
+                    ? "bg-[#c27847] text-white shadow-sm"
                     : step > 2
-                    ? 'bg-white/10 text-[#e59b67]'
-                    : 'bg-white/5 text-[#8a7b6f]'
+                      ? "bg-white/10 text-[#e59b67]"
+                      : "bg-white/5 text-[#8a7b6f]"
                 }`}
               >
-                <span>{lang === 'fa' ? '۲' : '2'}</span>
-                <span className="hidden xs:inline">{t('modal.step2')}</span>
+                <span>{lang === "fa" ? "۲" : "2"}</span>
+                <span className="hidden xs:inline">{t("modal.step2")}</span>
               </div>
               <span className="text-white/20 text-[10px]">——</span>
               <div
                 className={`flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full transition-all ${
                   step === 3
-                    ? 'bg-[#c27847] text-white shadow-sm'
-                    : 'bg-white/5 text-[#8a7b6f]'
+                    ? "bg-[#c27847] text-white shadow-sm"
+                    : "bg-white/5 text-[#8a7b6f]"
                 }`}
               >
-                <span>{lang === 'fa' ? '۳' : '3'}</span>
-                <span className="hidden xs:inline">{t('modal.step3')}</span>
+                <span>{lang === "fa" ? "۳" : "3"}</span>
+                <span className="hidden xs:inline">{t("modal.step3")}</span>
               </div>
             </div>
           )}
 
           {/* Step 1: English Level & Comfort */}
           {step === 1 && (
-            <form onSubmit={handleNextStep} className="space-y-2.5 sm:space-y-4">
+            <form
+              onSubmit={handleNextStep}
+              className="space-y-2.5 sm:space-y-4"
+            >
               <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#231f1c] border border-white/5">
                 <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-medium text-[#e59b67] mb-2 sm:mb-3">
                   <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                   <span className="leading-snug">
-                    {lang === 'fa'
-                      ? 'هدف ما راحتی و آرامش شماست؛ سطحتان را بدون نگرانی انتخاب کنید:'
-                      : 'Our priority is your comfort. Choose whatever fits best:'}
+                    {lang === "fa"
+                      ? "هدف ما راحتی و آرامش شماست؛ سطحتان را بدون نگرانی انتخاب کنید:"
+                      : "Our priority is your comfort. Choose whatever fits best:"}
                   </span>
                 </div>
 
                 <div className="space-y-1.5 sm:space-y-2.5">
                   {[
                     {
-                      id: 'newbie',
+                      id: "newbie",
                       title:
-                        lang === 'fa'
-                          ? 'تازه‌کار — بیشتر دوست دارم گوش بدم و کم‌کم وارد گفتگو بشم'
-                          : t('modal.level_newbie'),
+                        lang === "fa"
+                          ? "تازه‌کار — بیشتر دوست دارم گوش بدم و کم‌کم وارد گفتگو بشم"
+                          : t("modal.level_newbie"),
                       desc:
-                        lang === 'fa'
-                          ? 'اگر صحبت کردن برات سخته، هیچ اشکالی نداره؛ می‌تونی بیشتر گوش بدی و هر وقت راحت بودی صحبت کنی.'
-                          : t('modal.level_newbie_desc'),
+                        lang === "fa"
+                          ? "اگر صحبت کردن برات سخته، هیچ اشکالی نداره؛ می‌تونی بیشتر گوش بدی و هر وقت راحت بودی صحبت کنی."
+                          : t("modal.level_newbie_desc"),
                     },
                     {
-                      id: 'beginner',
+                      id: "beginner",
                       title:
-                        lang === 'fa'
-                          ? 'مبتدی — با جمله‌های کوتاه و ساده صحبت می‌کنم'
-                          : t('modal.level_beginner'),
+                        lang === "fa"
+                          ? "مبتدی — با جمله‌های کوتاه و ساده صحبت می‌کنم"
+                          : t("modal.level_beginner"),
                       desc:
-                        lang === 'fa'
-                          ? 'می‌تونم درباره موضوعات ساده با جمله‌های کوتاه صحبت کنم.'
-                          : t('modal.level_beginner_desc'),
+                        lang === "fa"
+                          ? "می‌تونم درباره موضوعات ساده با جمله‌های کوتاه صحبت کنم."
+                          : t("modal.level_beginner_desc"),
                     },
                     {
-                      id: 'intermediate',
+                      id: "intermediate",
                       title:
-                        lang === 'fa'
-                          ? 'متوسط — می‌تونم نظرم رو بیان کنم'
-                          : t('modal.level_intermediate'),
+                        lang === "fa"
+                          ? "متوسط — می‌تونم نظرم رو بیان کنم"
+                          : t("modal.level_intermediate"),
                       desc:
-                        lang === 'fa'
-                          ? 'می‌تونم درباره فیلم، شخصیت‌ها و احساساتم توضیح بدم و وارد گفتگو بشم.'
-                          : t('modal.level_intermediate_desc'),
+                        lang === "fa"
+                          ? "می‌تونم درباره فیلم، شخصیت‌ها و احساساتم توضیح بدم و وارد گفتگو بشم."
+                          : t("modal.level_intermediate_desc"),
                     },
                     {
-                      id: 'advanced',
+                      id: "advanced",
                       title:
-                        lang === 'fa'
-                          ? 'پیشرفته — از گفت‌وگوی عمیق لذت می‌برم'
-                          : t('modal.level_advanced'),
+                        lang === "fa"
+                          ? "پیشرفته — از گفت‌وگوی عمیق لذت می‌برم"
+                          : t("modal.level_advanced"),
                       desc:
-                        lang === 'fa'
-                          ? 'می‌تونم درباره موضوعات پیچیده‌تر، فلسفی و سینمایی راحت گفتگو کنم.'
-                          : t('modal.level_advanced_desc'),
+                        lang === "fa"
+                          ? "می‌تونم درباره موضوعات پیچیده‌تر، فلسفی و سینمایی راحت گفتگو کنم."
+                          : t("modal.level_advanced_desc"),
                     },
                   ].map((lvl) => (
                     <label
                       key={lvl.id}
                       className={`flex items-start gap-2.5 sm:gap-3 px-3 py-2 sm:p-3.5 rounded-lg sm:rounded-xl border cursor-pointer transition-all ${
                         formData.englishLevel === lvl.id
-                          ? 'bg-[#c27847]/15 border-[#c27847] text-white shadow-sm'
-                          : 'bg-[#1a1715] border-white/10 hover:border-white/20 text-[#b5a799]'
+                          ? "bg-[#c27847]/15 border-[#c27847] text-white shadow-sm"
+                          : "bg-[#1a1715] border-white/10 hover:border-white/20 text-[#b5a799]"
                       }`}
                     >
                       <input
@@ -366,7 +389,9 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                         }
                         className="mt-0.5 sm:mt-1 accent-[#c27847] shrink-0 cursor-pointer w-3.5 h-3.5 sm:w-4 sm:h-4"
                       />
-                      <div className={`flex-1 ${isRtl ? 'text-right' : 'text-left'}`}>
+                      <div
+                        className={`flex-1 ${isRtl ? "text-right" : "text-left"}`}
+                      >
                         <p className="text-xs sm:text-sm font-bold text-[#f5f1eb] leading-snug">
                           {lvl.title}
                         </p>
@@ -383,18 +408,23 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 type="submit"
                 className="w-full min-h-[42px] sm:min-h-[44px] py-2.5 sm:py-3.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#c27847]/30 transition-all cursor-pointer mt-0.5 sm:mt-0"
               >
-                {lang === 'fa' ? 'مرحله بعد: اطلاعات تماس' : 'Next: Contact Information'}
+                {lang === "fa"
+                  ? "مرحله بعد: اطلاعات تماس"
+                  : "Next: Contact Information"}
               </button>
             </form>
           )}
 
           {/* Step 2: Contact Information */}
           {step === 2 && (
-            <form onSubmit={handleNextStep} className="space-y-2.5 sm:space-y-4">
+            <form
+              onSubmit={handleNextStep}
+              className="space-y-2.5 sm:space-y-4"
+            >
               <div className="space-y-2 sm:space-y-3.5">
                 <div>
                   <label className="block text-xs font-semibold text-[#d4c7ba] mb-1 sm:mb-1.5">
-                    {lang === 'fa' ? 'نام و نام خانوادگی' : 'Full Name'} *
+                    {lang === "fa" ? "نام و نام خانوادگی" : "Full Name"} *
                   </label>
                   <input
                     type="text"
@@ -403,14 +433,19 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                     onChange={(e) =>
                       setFormData({ ...formData, fullName: e.target.value })
                     }
-                    placeholder={lang === 'fa' ? 'مثال: سارا رضایی' : 'e.g. Alex Morgan'}
+                    placeholder={
+                      lang === "fa" ? "نام و نام خانوادگی" : "e.g. Alex Morgan"
+                    }
                     className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#241f1c] border border-white/15 text-xs sm:text-sm text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847]"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-[#d4c7ba] mb-1 sm:mb-1.5">
-                    {lang === 'fa' ? 'شماره تماس یا آیدی تلگرام' : 'Phone or Telegram ID'} *
+                    {lang === "fa"
+                      ? "شماره تماس یا آیدی تلگرام"
+                      : "Phone or Telegram ID"}{" "}
+                    *
                   </label>
                   <input
                     type="text"
@@ -419,14 +454,18 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                     onChange={(e) =>
                       setFormData({ ...formData, contact: e.target.value })
                     }
-                    placeholder={lang === 'fa' ? '۰۹۱۲۰۰۰۰۰۰۰ یا @username' : '+1... or @telegram'}
+                    placeholder={
+                      lang === "fa"
+                        ? "۰۹۱۲۰۰۰۰۰۰۰ یا @username"
+                        : "+1... or @telegram"
+                    }
                     className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#241f1c] border border-white/15 text-xs sm:text-sm text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847]"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-[#d4c7ba] mb-1 sm:mb-1.5">
-                    {lang === 'fa' ? 'ایمیل (اختیاری)' : 'Email (optional)'}
+                    {lang === "fa" ? "ایمیل (اختیاری)" : "Email (optional)"}
                   </label>
                   <input
                     type="email"
@@ -464,7 +503,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   onClick={() => setStep(1)}
                   className="w-1/3 min-h-[40px] sm:min-h-[44px] py-2 sm:py-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#d1c8be] transition-colors cursor-pointer"
                 >
-                  {lang === 'fa' ? 'بازگشت' : 'Back'}
+                  {lang === "fa" ? "بازگشت" : "Back"}
                 </button>
                 <button
                   type="submit"
@@ -472,7 +511,9 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 >
                   {/* Fee-related text commented out for free reservation:
                   {lang === 'fa' ? 'مرحله بعد: پرداخت و تکمیل رزرو' : 'Next: Payment'} */}
-                  {lang === 'fa' ? 'مرحله بعد: تکمیل رزرو' : 'Next: Complete Reservation'}
+                  {lang === "fa"
+                    ? "مرحله بعد: تکمیل رزرو"
+                    : "Next: Complete Reservation"}
                 </button>
               </div>
             </form>
@@ -480,30 +521,33 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
 
           {/* Step 3: Confirmation Step */}
           {step === 3 && (
-            <form onSubmit={handleNextStep} className="space-y-2.5 sm:space-y-3.5 animate-fade-in">
+            <form
+              onSubmit={handleNextStep}
+              className="space-y-2.5 sm:space-y-3.5 animate-fade-in"
+            >
               {/* Compact Reservation Summary */}
               <div className="p-2.5 sm:p-3.5 rounded-xl bg-[#231f1c] border border-white/10 space-y-1.5 sm:space-y-2">
                 <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
                   <h4 className="text-[11.5px] sm:text-sm font-bold text-[#fdfbf7]">
-                    {lang === 'fa' ? 'تکمیل رزرو' : 'Reservation Summary'}
+                    {lang === "fa" ? "تکمیل رزرو" : "Reservation Summary"}
                   </h4>
                   <span className="text-[10px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded-md bg-[#c27847]/20 text-[#e59b67] font-medium">
-                    {lang === 'fa' ? session.dayOfWeekFa : session.dayOfWeekEn}
+                    {lang === "fa" ? session.dayOfWeekFa : session.dayOfWeekEn}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-x-2.5 gap-y-1 sm:gap-y-1.5 text-[10.5px] sm:text-xs">
                   <div>
                     <span className="text-[#8e8073] block text-[9.5px] sm:text-[10px] leading-tight">
-                      {lang === 'fa' ? 'نام فیلم:' : 'Movie:'}
+                      {lang === "fa" ? "نام فیلم:" : "Movie:"}
                     </span>
                     <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
-                      {lang === 'fa' ? movie.titleFa : movie.title}
+                      {lang === "fa" ? movie.titleFa : movie.title}
                     </span>
                   </div>
                   <div>
                     <span className="text-[#8e8073] block text-[9.5px] sm:text-[10px] leading-tight">
-                      {lang === 'fa' ? 'تاریخ و ساعت:' : 'Date & Time:'}
+                      {lang === "fa" ? "تاریخ و ساعت:" : "Date & Time:"}
                     </span>
                     <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
                       {getDateDisplay(lang)} • {getTimeDisplay(lang)}
@@ -511,10 +555,12 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   </div>
                   <div>
                     <span className="text-[#8e8073] block text-[9.5px] sm:text-[10px] leading-tight">
-                      {lang === 'fa' ? 'محل برگزاری:' : 'Location:'}
+                      {lang === "fa" ? "محل برگزاری:" : "Location:"}
                     </span>
                     <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
-                      {lang === 'fa' ? session.locationNameFa : session.locationNameEn}
+                      {lang === "fa"
+                        ? session.locationNameFa
+                        : session.locationNameEn}
                     </span>
                   </div>
                   {/* Cost/Fee: Entry fee display commented out for free reservation
@@ -529,10 +575,10 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   */}
                   <div>
                     <span className="text-[#8e8073] block text-[9.5px] sm:text-[10px] leading-tight">
-                      {lang === 'fa' ? 'نام شرکت‌کننده:' : 'Participant:'}
+                      {lang === "fa" ? "نام شرکت‌کننده:" : "Participant:"}
                     </span>
                     <span className="font-semibold text-[#f5f1eb] leading-tight block truncate">
-                      {formData.fullName || (lang === 'fa' ? '—' : '—')}
+                      {formData.fullName || (lang === "fa" ? "—" : "—")}
                     </span>
                   </div>
                 </div>
@@ -542,16 +588,30 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
               <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#231f1c] border border-white/10 space-y-1.5 sm:space-y-2">
                 <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#f5f1eb]">
                   <Sparkles className="w-4 h-4 text-[#e59b67] shrink-0" />
-                  <span>{lang === 'fa' ? 'تأیید نهایی رزرو رایگان' : 'Confirm Free Reservation'}</span>
+                  <span>
+                    {lang === "fa"
+                      ? "تأیید نهایی رزرو رایگان"
+                      : "Confirm Free Reservation"}
+                  </span>
                 </div>
                 <p className="text-[10.5px] sm:text-xs text-[#b8ab9f] leading-relaxed">
-                  {lang === 'fa' ? (
+                  {lang === "fa" ? (
                     <>
-                      شرکت در <strong className="font-bold text-[#f5f1eb]">اولین جلسه دورهمی</strong> رایگان است. جهت هماهنگی فضا با کافه و رزرو قطعی جای شما، لطفاً درخواست خود را ثبت کنید.
+                      شرکت در{" "}
+                      <strong className="font-bold text-[#f5f1eb]">
+                        اولین جلسه دورهمی
+                      </strong>{" "}
+                      رایگان است. جهت هماهنگی فضا با کافه و رزرو قطعی جای شما،
+                      لطفاً درخواست خود را ثبت کنید.
                     </>
                   ) : (
                     <>
-                      Attending your <strong className="font-bold text-[#f5f1eb]">first gathering</strong> is free. To coordinate the space and guarantee your seat, please confirm your reservation below.
+                      Attending your{" "}
+                      <strong className="font-bold text-[#f5f1eb]">
+                        first gathering
+                      </strong>{" "}
+                      is free. To coordinate the space and guarantee your seat,
+                      please confirm your reservation below.
                     </>
                   )}
                 </p>
@@ -561,7 +621,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
               {submitError && (
                 <div
                   className={`p-2.5 sm:p-3 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs flex items-center gap-2 ${
-                    isRtl ? 'text-right' : 'text-left'
+                    isRtl ? "text-right" : "text-left"
                   }`}
                 >
                   <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
@@ -677,7 +737,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   disabled={isSubmitting}
                   className="w-1/3 min-h-[38px] sm:min-h-[44px] py-1.5 sm:py-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-[#d1c8be] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {lang === 'fa' ? 'بازگشت' : 'Back'}
+                  {lang === "fa" ? "بازگشت" : "Back"}
                 </button>
                 <button
                   type="submit"
@@ -690,19 +750,29 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                     hasTransferred && !isSubmitting && !isFull
                     */
                     !isSubmitting && !isFull
-                      ? 'bg-[#c27847] hover:bg-[#a86134] text-white shadow-[#c27847]/30 cursor-pointer active:scale-98'
-                      : 'bg-white/10 text-[#73675c] border border-white/5 cursor-not-allowed opacity-70'
+                      ? "bg-[#c27847] hover:bg-[#a86134] text-white shadow-[#c27847]/30 cursor-pointer active:scale-98"
+                      : "bg-white/10 text-[#73675c] border border-white/5 cursor-not-allowed opacity-70"
                   }`}
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      <span>{lang === 'fa' ? 'در حال ثبت اطلاعات...' : 'Submitting...'}</span>
+                      <span>
+                        {lang === "fa"
+                          ? "در حال ثبت اطلاعات..."
+                          : "Submitting..."}
+                      </span>
                     </>
+                  ) : isFull ? (
+                    lang === "fa" ? (
+                      "ظرفیت تکمیل شده است"
+                    ) : (
+                      "Fully Booked"
+                    )
+                  ) : lang === "fa" ? (
+                    "ثبت نهایی رزرو"
                   ) : (
-                    isFull
-                      ? (lang === 'fa' ? 'ظرفیت تکمیل شده است' : 'Fully Booked')
-                      : (lang === 'fa' ? 'ثبت نهایی رزرو' : 'Confirm Reservation')
+                    "Confirm Reservation"
                   )}
                 </button>
               </div>
@@ -720,7 +790,9 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
 
               <div className="space-y-1">
                 <h4 className="text-base sm:text-xl font-bold text-white">
-                  {lang === 'fa' ? 'رزرو شما با موفقیت ثبت شد ✓' : 'Reservation Confirmed ✓'}
+                  {lang === "fa"
+                    ? "رزرو شما با موفقیت ثبت شد ✓"
+                    : "Reservation Confirmed ✓"}
                 </h4>
                 {/* Cost/Fee: Payment receipt verification note commented out for free reservation
                 <p className="text-[11px] sm:text-xs text-[#c2b4a5] max-w-md mx-auto leading-relaxed">
@@ -730,9 +802,9 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 </p>
                 */}
                 <p className="text-[11px] sm:text-xs text-[#c2b4a5] max-w-md mx-auto leading-relaxed">
-                  {lang === 'fa'
-                    ? 'جای شما برای این دورهمی ثبت شد. مشتاق دیدار شما در کافه هستیم!'
-                    : 'Your seat has been reserved. Looking forward to seeing you at the café!'}
+                  {lang === "fa"
+                    ? "جای شما برای این دورهمی ثبت شد. مشتاق دیدار شما در کافه هستیم!"
+                    : "Your seat has been reserved. Looking forward to seeing you at the café!"}
                 </p>
               </div>
 
@@ -756,21 +828,23 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 */}
                 <div className="flex items-center justify-center py-1.5 px-3 rounded-xl bg-[#27221e] border border-[#c27847]/40 text-[#e59b67] text-xs font-bold gap-2">
                   <Check className="w-3.5 h-3.5 text-[#e59b67]" />
-                  <span>{lang === 'fa' ? 'رزرو تأیید شده' : 'Reservation Confirmed'}</span>
+                  <span>
+                    {lang === "fa" ? "رزرو تأیید شده" : "Reservation Confirmed"}
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5 text-xs pt-1">
                   <div>
                     <span className="text-[#87786b] block text-[10px] sm:text-[11px]">
-                      {lang === 'fa' ? 'فیلم:' : 'Film:'}
+                      {lang === "fa" ? "فیلم:" : "Film:"}
                     </span>
                     <span className="font-semibold text-white">
-                      {lang === 'fa' ? movie.titleFa : movie.title}
+                      {lang === "fa" ? movie.titleFa : movie.title}
                     </span>
                   </div>
                   <div>
                     <span className="text-[#87786b] block text-[10px] sm:text-[11px]">
-                      {lang === 'fa' ? 'زمان:' : 'Time:'}
+                      {lang === "fa" ? "زمان:" : "Time:"}
                     </span>
                     <span className="font-semibold text-white">
                       {getDateDisplay(lang)} • {getTimeDisplay(lang)}
@@ -778,10 +852,17 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                   </div>
                   <div className="col-span-2">
                     <span className="text-[#87786b] block text-[10px] sm:text-[11px]">
-                      {lang === 'fa' ? 'محل برگزاری:' : 'Location:'}
+                      {lang === "fa" ? "محل برگزاری:" : "Location:"}
                     </span>
                     <span className="font-semibold text-white">
-                      {lang === 'fa' ? session.locationNameFa : session.locationNameEn} ({lang === 'fa' ? session.locationAddressFa : session.locationAddressEn})
+                      {lang === "fa"
+                        ? session.locationNameFa
+                        : session.locationNameEn}{" "}
+                      (
+                      {lang === "fa"
+                        ? session.locationAddressFa
+                        : session.locationAddressEn}
+                      )
                     </span>
                   </div>
                 </div>
@@ -789,9 +870,11 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 <div className="pt-2 border-t border-white/10 text-[11px] text-[#b8ab9f] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#e59b67] shrink-0" />
                   <span>
-                    {lang === 'fa'
-                      ? 'نام ثبت شده: ' + (formData.fullName || 'شرکت‌کننده عزیز')
-                      : 'Registered Name: ' + (formData.fullName || 'Valued Participant')}
+                    {lang === "fa"
+                      ? "نام ثبت شده: " +
+                        (formData.fullName || "شرکت‌کننده عزیز")
+                      : "Registered Name: " +
+                        (formData.fullName || "Valued Participant")}
                   </span>
                 </div>
               </div>
@@ -800,7 +883,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
                 onClick={handleResetAndClose}
                 className="w-full min-h-[42px] sm:min-h-[44px] py-2.5 sm:py-3.5 rounded-xl bg-[#c27847] hover:bg-[#a86134] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#c27847]/30 transition-all cursor-pointer"
               >
-                {lang === 'fa' ? 'متوجه شدم' : 'Got it'}
+                {lang === "fa" ? "متوجه شدم" : "Got it"}
               </button>
             </div>
           )}
@@ -809,4 +892,3 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({ isOpen, onCl
     </div>
   );
 };
-
