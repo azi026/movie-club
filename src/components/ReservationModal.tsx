@@ -434,7 +434,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                       setFormData({ ...formData, fullName: e.target.value })
                     }
                     placeholder={
-                      lang === "fa" ? "نام و نام خانوادگی" : "e.g. Alex Morgan"
+                      lang === "fa" ? "نام و نام خانوادگی" : "Full name"
                     }
                     className="w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#241f1c] border border-white/15 text-xs sm:text-sm text-white placeholder-[#786c61] focus:outline-none focus:border-[#c27847]"
                   />
