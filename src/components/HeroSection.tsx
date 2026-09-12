@@ -125,16 +125,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   : t("hero.cta_primary")}
               </span>
             </button>
-
-            {/* First Gathering Free Supporting Note */}
-            <p
-              id="hero-free-first-gathering-note"
-              className="text-[11px] sm:text-xs text-[#e59b67] font-medium mt-1.5 sm:mt-2 tracking-wide text-center"
-            >
-              {lang === "fa"
-                ? "اولین دورهمی، مهمان ما باشید ✨"
-                : "Your first gathering is our treat ✨"}
-            </p>
           </div>
 
           <button
