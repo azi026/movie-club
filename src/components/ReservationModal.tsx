@@ -677,7 +677,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                   </p>
 
                   <a
-                    href="https://t.me/Haniemir"
+                    href={`https://t.me/Haniemir?text=${encodeURIComponent(`سلام، رسید پرداخت Movie Club را ارسال می‌کنم.\nنام و نام خانوادگی: ${formData.fullName}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full min-h-[36px] sm:min-h-[40px] flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:py-2 rounded-xl bg-[#2b2520] hover:bg-[#362e28] border border-[#c27847]/40 text-[#e59b67] hover:text-[#f5be98] text-[11.5px] sm:text-sm font-bold transition-all shadow-sm"
