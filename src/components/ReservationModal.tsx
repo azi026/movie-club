@@ -24,6 +24,7 @@ import { useSession } from "../context/SessionContext";
 import { PAYMENT_CONFIG } from "../data/movieClubData";
 import { supabase } from "../lib/supabase";
 import { ReservationPayload } from "../types";
+import { Clapperboard } from "lucide-react";
 
 interface ReservationModalProps {
   isOpen: boolean;
@@ -39,6 +40,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
     hasActiveSession,
     session,
     movie,
+    isLoading,
     isFull,
     refreshCapacity,
     getDateDisplay,
@@ -61,9 +63,16 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
   const [copied, setCopied] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-
+  console.log("MODAL STATE", {
+    isLoading,
+    hasActiveSession,
+    session,
+    movie,
+  });
   if (!isOpen) return null;
-
+  if (isLoading) {
+    return null;
+  }
   if (!hasActiveSession || !session || !movie) {
     return (
       <div
@@ -613,28 +622,48 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                 </p>
 
                 <div className="p-2.5 sm:p-3 rounded-xl bg-[#141211] border border-[#c27847]/25 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-[10.5px] sm:text-xs text-[#9e8f82]">
-                      {lang === "fa" ? "هزینه حضور:" : "Amount:"}
-                    </span>
-                    <div className="text-right">
-                      <div className="text-[10px] sm:text-xs text-[#c27847] mb-1">
-                        {lang === "fa"
-                          ? PAYMENT_CONFIG.discountLabelFa
-                          : PAYMENT_CONFIG.discountLabelEn}
+                  <div className="relative overflow-hidden p-3 sm:p-4 rounded-xl bg-gradient-to-r from-[#24170f] via-[#181311] to-[#0f0d0c] border border-[#c27847]/50">
+                    {/* Discount Badge */}
+                    <div className="absolute top-0 right-0 bg-[#c21f3a] text-white text-xs font-bold px-4 py-2 rounded-bl-xl">
+                      🎁 {lang === "fa" ? "۲۷٪ تخفیف" : "27% OFF"}
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-6 pr-20">
+                      <div className="w-10 h-10 rounded-full bg-[#e5b967]/10 flex items-center justify-center">
+                        <Clapperboard className="w-5 h-5 text-[#e5b967]" />
                       </div>
 
-                      <div className="text-xs sm:text-sm text-[#9e8f82] line-through">
+                      <div>
+                        <h3 className="text-[#f5c542] text-sm sm:text-base font-extrabold">
+                          {lang === "fa"
+                            ? "به مناسبت روز سینما"
+                            : "Cinema Day Special"}
+                        </h3>
+
+                        <p className="text-[#d1c8be] text-xs mt-1">
+                          {lang === "fa"
+                            ? "تخفیف ویژه برای علاقه‌مندان فیلم"
+                            : "Special discount for movie lovers"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-[#9e8f82] text-sm line-through">
                         {lang === "fa"
                           ? `${PAYMENT_CONFIG.originalPriceFormattedFa} تومان`
                           : PAYMENT_CONFIG.originalPriceFormattedEn}
-                      </div>
+                      </span>
 
-                      <div className="text-xs sm:text-base font-extrabold text-[#e59b67]">
+                      <span className="text-[#e5b967] text-xl sm:text-2xl font-extrabold">
+                        →
+                      </span>
+
+                      <span className="text-[#f5c542] text-lg sm:text-xl font-extrabold">
                         {lang === "fa"
                           ? `${PAYMENT_CONFIG.priceFormattedFa} تومان`
                           : PAYMENT_CONFIG.priceFormattedEn}
-                      </div>
+                      </span>
                     </div>
                   </div>
 
