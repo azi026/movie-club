@@ -207,14 +207,14 @@ export const FilmDetailsModal: React.FC<FilmDetailsModalProps> = ({
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-[#2b241f] border border-[#c27847]/30 text-xs sm:text-sm text-[#f0e3d5] flex items-center gap-3">
+              {/* <div className="p-4 rounded-2xl bg-[#2b241f] border border-[#c27847]/30 text-xs sm:text-sm text-[#f0e3d5] flex items-center gap-3">
                 <Sparkles className="w-5 h-5 text-[#e59b67] shrink-0" />
                 <span>
                   {lang === "fa"
                     ? "این فیلم با ریتمی آرام، فضایی عالی برای گفتگو درباره سرنوشت، هویت و تصمیم‌های زندگی فراهم می‌کند."
                     : "A beautifully paced film offering wonderful touchpoints to discuss fate, identity, and pivotal life decisions."}
                 </span>
-              </div>
+              </div> */}
             </div>
           )}
 
