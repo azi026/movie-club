@@ -95,10 +95,6 @@ export const PreviousGatheringSection: React.FC = () => {
               </span>
             </div>
             <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
-              <span className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full text-xs text-white">
-                جلسه واقعی 🎥
-              </span>
-
               {/* <span className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full text-xs text-white">
                 دقیقه 17⏱
               </span> */}
