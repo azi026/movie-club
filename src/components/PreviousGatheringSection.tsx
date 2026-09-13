@@ -99,9 +99,9 @@ export const PreviousGatheringSection: React.FC = () => {
                 جلسه واقعی 🎥
               </span>
 
-              <span className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full text-xs text-white">
+              {/* <span className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full text-xs text-white">
                 دقیقه 17⏱
-              </span>
+              </span> */}
             </div>
             {previousSession?.video_url && (
               <button
