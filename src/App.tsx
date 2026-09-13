@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { AboutModal } from './components/AboutModal';
-import { ContactModal } from './components/ContactModal';
-import { FaqModal } from './components/FaqModal';
-import { FilmDetailsModal } from './components/FilmDetailsModal';
-import { Footer } from './components/Footer';
-import { GatheringCard } from './components/GatheringCard';
-import { HeroSection } from './components/HeroSection';
-import { HowItWorksSection } from './components/HowItWorksSection';
-import { MidRowCards } from './components/MidRowCards';
-import { Navbar } from './components/Navbar';
-import { ReservationModal } from './components/ReservationModal';
-import { LanguageProvider } from './context/LanguageContext';
-import { SessionProvider } from './context/SessionContext';
-
+import React, { useState } from "react";
+import { AboutModal } from "./components/AboutModal";
+import { ContactModal } from "./components/ContactModal";
+import { FaqModal } from "./components/FaqModal";
+import { FilmDetailsModal } from "./components/FilmDetailsModal";
+import { Footer } from "./components/Footer";
+import { GatheringCard } from "./components/GatheringCard";
+import { HeroSection } from "./components/HeroSection";
+import { HowItWorksSection } from "./components/HowItWorksSection";
+import { MidRowCards } from "./components/MidRowCards";
+import { Navbar } from "./components/Navbar";
+import { ReservationModal } from "./components/ReservationModal";
+import { LanguageProvider } from "./context/LanguageContext";
+import { SessionProvider } from "./context/SessionContext";
+import { PreviousGatheringSection } from "./components/PreviousGatheringSection";
 export function MovieClubApp() {
   const [isReservationOpen, setIsReservationOpen] = useState(false);
   const [isFilmDetailsOpen, setIsFilmDetailsOpen] = useState(false);
@@ -25,7 +25,7 @@ export function MovieClubApp() {
     setTimeout(() => {
       const el = document.getElementById(id);
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 60);
   };
@@ -53,14 +53,10 @@ export function MovieClubApp() {
         <HowItWorksSection />
 
         {/* 4. This Week's Film + 5. Beginner Reassurance + 6. Benefits */}
-        <MidRowCards
-          onOpenFilmDetails={() => setIsFilmDetailsOpen(true)}
-        />
-
+        <MidRowCards onOpenFilmDetails={() => setIsFilmDetailsOpen(true)} />
+        <PreviousGatheringSection />
         {/* 7. This Week's Gathering */}
-        <GatheringCard
-          onOpenReservation={() => setIsReservationOpen(true)}
-        />
+        <GatheringCard onOpenReservation={() => setIsReservationOpen(true)} />
       </main>
 
       {/* 8. Footer */}

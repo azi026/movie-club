@@ -75,10 +75,28 @@ export const CURRENT_MOVIE: MovieData = {
   ],
 };
 
+// export const PAYMENT_CONFIG = {
+//   priceToman: 220000,
+//   priceFormattedFa: "۲۲۰٬۰۰۰",
+//   priceFormattedEn: "300,000 Toman",
+//   cardNumber: "6219861841340333",
+//   cardNumberFormatted: "۶۲۱۹ - ۸۶۱۸ - ۴۱۳۴ - ۰۳۳۳",
+//   cardHolderNameFa: "هانیه میرابوالقاسمی",
+//   cardHolderNameEn: "Hanieh Mirabolghasemi",
+//   supportLink: "https://t.me/movieclub_support",
+// };
 export const PAYMENT_CONFIG = {
-  priceToman: 300000,
-  priceFormattedFa: "۳۰۰٬۰۰۰",
-  priceFormattedEn: "300,000 Toman",
+  originalPriceToman: 300000,
+  originalPriceFormattedFa: "۳۰۰٬۰۰۰",
+  originalPriceFormattedEn: "300,000 Toman",
+
+  priceToman: 220000,
+  priceFormattedFa: "۲۲۰٬۰۰۰",
+  priceFormattedEn: "220,000 Toman",
+
+  discountLabelFa: "تخفیف ویژه روز سینما",
+  discountLabelEn: "Cinema Day Special",
+
   cardNumber: "6219861841340333",
   cardNumberFormatted: "۶۲۱۹ - ۸۶۱۸ - ۴۱۳۴ - ۰۳۳۳",
   cardHolderNameFa: "هانیه میرابوالقاسمی",

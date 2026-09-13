@@ -617,11 +617,25 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                     <span className="text-[10.5px] sm:text-xs text-[#9e8f82]">
                       {lang === "fa" ? "هزینه حضور:" : "Amount:"}
                     </span>
-                    <span className="text-xs sm:text-base font-extrabold text-[#e59b67]">
-                      {lang === "fa"
-                        ? `${PAYMENT_CONFIG.priceFormattedFa} تومان`
-                        : PAYMENT_CONFIG.priceFormattedEn}
-                    </span>
+                    <div className="text-right">
+                      <div className="text-[10px] sm:text-xs text-[#c27847] mb-1">
+                        {lang === "fa"
+                          ? PAYMENT_CONFIG.discountLabelFa
+                          : PAYMENT_CONFIG.discountLabelEn}
+                      </div>
+
+                      <div className="text-xs sm:text-sm text-[#9e8f82] line-through">
+                        {lang === "fa"
+                          ? `${PAYMENT_CONFIG.originalPriceFormattedFa} تومان`
+                          : PAYMENT_CONFIG.originalPriceFormattedEn}
+                      </div>
+
+                      <div className="text-xs sm:text-base font-extrabold text-[#e59b67]">
+                        {lang === "fa"
+                          ? `${PAYMENT_CONFIG.priceFormattedFa} تومان`
+                          : PAYMENT_CONFIG.priceFormattedEn}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="pt-1.5 border-t border-white/10">
