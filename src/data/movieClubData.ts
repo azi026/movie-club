@@ -86,12 +86,12 @@ export const CURRENT_MOVIE: MovieData = {
 //   supportLink: "https://t.me/movieclub_support",
 // };
 export const PAYMENT_CONFIG = {
-  originalPriceToman: 300000,
-  originalPriceFormattedFa: "۳۰۰٬۰۰۰",
-  originalPriceFormattedEn: "300,000 Toman",
+  originalPriceToman: 320000,
+  originalPriceFormattedFa: "۳۲۰٬۰۰۰",
+  originalPriceFormattedEn: "320,000 Toman",
 
-  priceToman: 220000,
-  priceFormattedFa: "۲۲۰٬۰۰۰",
+  priceToman: 320000,
+  priceFormattedFa: "۳۲۰٬۰۰۰",
   priceFormattedEn: "220,000 Toman",
 
   discountLabelFa: "تخفیف ویژه روز سینما",

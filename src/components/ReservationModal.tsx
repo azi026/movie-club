@@ -624,11 +624,11 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                 <div className="p-2.5 sm:p-3 rounded-xl bg-[#141211] border border-[#c27847]/25 space-y-2">
                   <div className="relative overflow-hidden p-3 sm:p-4 rounded-xl bg-gradient-to-r from-[#24170f] via-[#181311] to-[#0f0d0c] border border-[#c27847]/50">
                     {/* Discount Badge */}
-                    <div className="absolute top-0 right-0 bg-[#c21f3a] text-white text-xs font-bold px-4 py-2 rounded-bl-xl">
+                    {/* <div className="absolute top-0 right-0 bg-[#c21f3a] text-white text-xs font-bold px-4 py-2 rounded-bl-xl">
                       🎁 {lang === "fa" ? "۲۷٪ تخفیف" : "27% OFF"}
-                    </div>
+                    </div> */}
 
-                    <div className="flex items-center gap-3 mb-6 pr-20">
+                    {/* <div className="flex items-center gap-3 mb-6 pr-20">
                       <div className="w-10 h-10 rounded-full bg-[#e5b967]/10 flex items-center justify-center">
                         <Clapperboard className="w-5 h-5 text-[#e5b967]" />
                       </div>
@@ -646,18 +646,18 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                             : "Special discount for movie lovers"}
                         </p>
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="flex items-center justify-center gap-3">
-                      <span className="text-[#9e8f82] text-sm line-through">
+                      {/* <span className="text-[#9e8f82] text-sm line-through">
                         {lang === "fa"
                           ? `${PAYMENT_CONFIG.originalPriceFormattedFa} تومان`
                           : PAYMENT_CONFIG.originalPriceFormattedEn}
-                      </span>
+                      </span> */}
 
-                      <span className="text-[#e5b967] text-xl sm:text-2xl font-extrabold">
+                      {/* <span className="text-[#e5b967] text-xl sm:text-2xl font-extrabold">
                         →
-                      </span>
+                      </span> */}
 
                       <span className="text-[#f5c542] text-lg sm:text-xl font-extrabold">
                         {lang === "fa"
