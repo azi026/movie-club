@@ -92,12 +92,12 @@ export const PAYMENT_CONFIG = {
 
   priceToman: 320000,
   priceFormattedFa: "۳۲۰٬۰۰۰",
-  priceFormattedEn: "220,000 Toman",
+  priceFormattedEn: "320,000 Toman",
 
   discountLabelFa: "تخفیف ویژه روز سینما",
   discountLabelEn: "Cinema Day Special",
 
-  cardNumber: "6219861841340333",
+  cardNumber: "6219-8618-4134-0333",
   cardNumberFormatted: "۶۲۱۹ - ۸۶۱۸ - ۴۱۳۴ - ۰۳۳۳",
   cardHolderNameFa: "هانیه میرابوالقاسمی",
   cardHolderNameEn: "Hanieh Mirabolghasemi",

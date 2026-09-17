@@ -74,7 +74,7 @@ export const PAYMENT_CONFIG = {
   priceToman: 280000,
   priceFormattedFa: '۲۸۰,۰۰۰',
   priceFormattedEn: '280,000 Toman',
-  cardNumber: '6219861841340333',
+  cardNumber: '6219-8618-4134-0333',
   cardNumberFormatted: '۶۲۱۹ - ۸۶۱۸ - ۴۱۳۴ - ۰۳۳۳',
   cardHolderNameFa: 'هانیه میرابوالقاسمی',
   cardHolderNameEn: 'Hanieh Mirabolghasemi',
