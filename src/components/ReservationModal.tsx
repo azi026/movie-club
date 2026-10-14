@@ -290,20 +290,23 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
         console.log("1. شروع فراخوانی تابع ایمیل");
 
         try {
-          const { data: emailData, error: emailError } =
-            await supabase.functions.invoke("send-reservation-email", {
+          const { error: emailError } = await supabase.functions.invoke(
+            "send-reservation-email",
+            {
               body: {
                 name: formData.fullName.trim(),
+                phone: formData.contact.trim(),
+                level: formData.englishLevel || "",
+                email: formData.email.trim() || "",
                 movie: lang === "fa" ? movie.titleFa : movie.title,
               },
-            });
-
-          console.log("2. نتیجه تابع ایمیل:", emailData);
+            },
+          );
 
           if (emailError) {
-            console.error("3. خطای تابع ایمیل:", emailError);
+            console.error("Reservation email failed:", emailError);
           } else {
-            console.log("3. فراخوانی بدون خطای کلاینت انجام شد");
+            console.log("Reservation email function responded successfully.");
           }
         } catch (emailErr) {
           console.error("4. خطای غیرمنتظره ایمیل:", emailErr);
