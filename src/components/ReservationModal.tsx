@@ -299,6 +299,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                 level: formData.englishLevel || "",
                 email: formData.email.trim() || "",
                 movie: lang === "fa" ? movie.titleFa : movie.title,
+                createdAt: data.created_at,
               },
             },
           );
